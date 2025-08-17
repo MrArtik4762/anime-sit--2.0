@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестовая страница</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+        }
+        .test-container {
+            border: 3px solid red;
+            padding: 20px;
+            margin: 20px;
+            background-color: white;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Тестовая страница для диагностики белого экрана</h1>
+        
+        <div class="success">
+            <h2>✅ Если вы видите этот текст, значит:</h2>
+            <ul>
+                <li>HTML работает корректно</li>
+                <li>CSS работает корректно</li>
+                <li>Браузер открывает страницы</li>
+                <li>Проблема не в базовой загрузке страницы</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h2>📊 Тест JavaScript:</h2>
+            <p>Текущая дата: <span id="date"></span></p>
+            <p>Тип браузера: <span id="browser"></span></p>
+            <p>Размер окна: <span id="size"></span></p>
+        </div>
+        
+        <div class="error">
+            <h2>❌ Если вы видите только белый экран:</h2>
+            <ul>
+                <li>Проверьте, включен ли JavaScript в браузере</li>
+                <li>Попробуйте открыть в другом браузере</li>
+                <li>Проверьте расширения блокировки рекламы</li>
+                <li>Попробуйте режим инкогнито</li>
+            </ul>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 15px; background-color: #e8f5e8; border: 1px solid #4caf50;">
+            <h3>🎯 Дальнейшие шаги:</h3>
+            <p>Если тестовая страница видна, но React приложение нет, проблема в:</p>
+            <ol>
+                <li>React/Vite сборке</li>
+                <li>JavaScript выполнении</li>
+                <li>Конфликте расширений браузера</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Тест JavaScript
+        document.getElementById('date').textContent = new Date().toLocaleString();
+        document.getElementById('browser').textContent = navigator.userAgent;
+        document.getElementById('size').textContent = window.innerWidth + 'x' + window.innerHeight;
+        
+        console.log('🚀 JavaScript тест выполнен успешно');
+        console.log('📍 URL:', window.location.href);
+        console.log('📊 Размер окна:', window.innerWidth + 'x' + window.innerHeight);
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+/* Минимальные стили для теста */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: Arial, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  padding: 20px;
+  border: 1px solid red; /* видимая граница для теста */
+}
+
+/* Общие стили для тестового контента */
+.test-container {
+  border: 2px solid blue;
+  padding: 20px;
+  margin: 20px;
+  background-color: #f0f8ff;
+}
