@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import ErrorBoundary from './components/ErrorBoundary';
 import Preloader from './components/Preloader';
-import ParticlesBg from './components/ParticlesBg';
+// import ParticlesBg from './components/ParticlesBg';
 import PageTransition from './components/PageTransition';
 import Navbar from './components/Navbar';
 
@@ -22,7 +22,7 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <div className="app-container">
-        <ParticlesBg className="relative" />
+        {/* <ParticlesBg className="relative" /> */}
         <Preloader />
         
         <Helmet>
