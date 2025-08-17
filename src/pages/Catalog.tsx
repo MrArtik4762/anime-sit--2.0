@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import AnimeCard from '../components/AnimeCard';
 import { useUpdates } from '../services/titles';
 import FiltersPanel from '../components/FiltersPanel';
@@ -7,7 +7,6 @@ import { useInView } from 'react-intersection-observer';
 const Catalog: React.FC = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useUpdates(20);
   const { ref, inView } = useInView();
-  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Реализация предзагрузки контента
@@ -18,7 +17,7 @@ const Catalog: React.FC = () => {
       const preloadCount = Math.min(12, items.length);
       for (let i = 0; i < preloadCount; i++) {
         setTimeout(() => {
-          setVisibleCards(prev => new Set(prev).add(i));
+          // TODO: Реализовать предзагрузку карточек
         }, i * 100);
       }
     }
@@ -34,11 +33,11 @@ const Catalog: React.FC = () => {
   // Пример категорий
   const categories = [
     { id: 'all', name: 'Все', count: items.length },
-    { id: 'action', name: 'Экшен', count: items.filter((t: any) => t.genres?.includes('Экшен')).length },
-    { id: 'comedy', name: 'Комедия', count: items.filter((t: any) => t.genres?.includes('Комедия')).length },
-    { id: 'drama', name: 'Драма', count: items.filter((t: any) => t.genres?.includes('Драма')).length },
-    { id: 'fantasy', name: 'Фэнтези', count: items.filter((t: any) => t.genres?.includes('Фэнтези')).length },
-    { id: 'romance', name: 'Романтика', count: items.filter((t: any) => t.genres?.includes('Романтика')).length },
+    { id: 'action', name: 'Экшен', count: items.filter((t: { genres?: string[] }) => t.genres?.includes('Экшен')).length },
+    { id: 'comedy', name: 'Комедия', count: items.filter((t: { genres?: string[] }) => t.genres?.includes('Комедия')).length },
+    { id: 'drama', name: 'Драма', count: items.filter((t: { genres?: string[] }) => t.genres?.includes('Драма')).length },
+    { id: 'fantasy', name: 'Фэнтези', count: items.filter((t: { genres?: string[] }) => t.genres?.includes('Фэнтези')).length },
+    { id: 'romance', name: 'Романтика', count: items.filter((t: { genres?: string[] }) => t.genres?.includes('Романтика')).length },
   ];
 
   return (
@@ -72,7 +71,7 @@ const Catalog: React.FC = () => {
                     className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 ${
                       selectedCategory === category.id
                         ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30'
-                        : 'hover:bg-white/5 border border-transparent'
+                        : 'hover:bg-purple-500/10 dark:hover:bg-white/5 border border-transparent'
                     }`}
                   >
                     <div className="flex justify-between items-center">
@@ -90,12 +89,11 @@ const Catalog: React.FC = () => {
           {/* Основная сетка карточек */}
           <div className="flex-1">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8">
-              {items.map((t: any, index: number) => (
+              {items.map((t: { id: number; names: { ru?: string; en?: string }; year: number; type: string; posters?: { medium?: { url?: string }; small?: { url?: string } } }) => (
                 <AnimeCard
                   key={t.id}
-                  title={t}
-                  index={index}
-                  showRemoveButton={false}
+                  title={t as any}
+                  onClick={() => {}}
                 />
               ))}
             </div>

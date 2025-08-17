@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { usePrefersReducedMotion } from '../utils/motion';
 
 interface LazyImageProps {
   src: string;
@@ -9,6 +10,11 @@ interface LazyImageProps {
   onError?: () => void;
   threshold?: number;
   rootMargin?: string;
+  srcSet?: {
+    small?: string;
+    medium?: string;
+    large?: string;
+  };
 }
 
 const LazyImage: React.FC<LazyImageProps> = ({
@@ -19,8 +25,10 @@ const LazyImage: React.FC<LazyImageProps> = ({
   onLoad,
   onError,
   threshold = 0.1,
-  rootMargin = '50px'
+  rootMargin = '50px',
+  srcSet
 }) => {
+  const reduceMotion = usePrefersReducedMotion();
   const [imageSrc, setImageSrc] = useState(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -61,10 +69,21 @@ const LazyImage: React.FC<LazyImageProps> = ({
     onError?.();
   };
 
+  // CSS transition properties для изображений с учетом prefers-reduced-motion
+  const imageTransitionProps = reduceMotion ? {
+    duration: 0.1,
+    filter: isLoaded ? 'none' : 'blur(0px)',
+    transform: isLoaded ? 'none' : 'scale(1)'
+  } : {
+    duration: 0.3,
+    filter: isLoaded ? 'none' : 'blur(5px)',
+    transform: isLoaded ? 'none' : 'scale(1.05)'
+  };
+
   return (
-    <div 
-      ref={imgRef} 
-      className={`relative overflow-hidden transition-all duration-300 ${className}`}
+    <div
+      ref={imgRef}
+      className={`relative overflow-hidden ${reduceMotion ? '' : 'transition-all duration-300'} ${className}`}
       style={{
         background: hasError ? 'var(--bg-tertiary)' : 'transparent'
       }}
@@ -72,27 +91,27 @@ const LazyImage: React.FC<LazyImageProps> = ({
       <img
         src={imageSrc}
         alt={alt}
+        srcSet={srcSet ? `${srcSet.small} 640w, ${srcSet.medium} 1024w, ${srcSet.large} 1920w` : undefined}
+        sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 1920px"
         className={`lazy-image transition-all duration-300 ${
           isLoaded ? 'loaded' : 'loading'
         } ${hasError ? 'opacity-50' : ''}`}
+        loading="lazy"
         onLoad={handleLoad}
         onError={handleError}
-        style={{
-          filter: isLoaded ? 'none' : 'blur(5px)',
-          transform: isLoaded ? 'none' : 'scale(1.05)'
-        }}
+        style={imageTransitionProps}
       />
       
       {hasError && (
         <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-          <svg 
-            width="48" 
-            height="48" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
             strokeWidth="2"
-            strokeLinecap="round" 
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <circle cx="12" cy="12" r="10"/>
@@ -103,7 +122,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       )}
       
       {!isLoaded && !hasError && (
-        <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+        <div className={`absolute inset-0 bg-gray-200 dark:bg-gray-700 ${reduceMotion ? '' : 'animate-pulse'}`} />
       )}
     </div>
   );

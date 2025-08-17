@@ -20,7 +20,7 @@ window.addEventListener('error', (ev) => {
         ev.error?.message ?? ev.message
       )}\n\nSee console for details.</pre>`;
     }
-  } catch {}
+  } catch (e) { console.error('Error handling unhandled rejection:', e); }
 });
 
 window.addEventListener('unhandledrejection', (ev) => {
@@ -31,7 +31,7 @@ window.addEventListener('unhandledrejection', (ev) => {
         ev.reason
       )}\n\nSee console for details.</pre>`;
     }
-  } catch {}
+  } catch (e) { console.error('Error handling window error:', e); }
 });
 
 const rootEl = document.getElementById('root');

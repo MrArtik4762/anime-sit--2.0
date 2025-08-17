@@ -1,30 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useFavorites } from '../hooks/useFavorites';
 import AnimeCard from '../components/AnimeCard';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePrefersReducedMotion } from '../utils/motion';
 
 const Favorites: React.FC = () => {
-  const { items, removeFavorite, addFavorite } = useFavorites();
-  const [notification, setNotification] = useState<{message: string, type: 'add' | 'remove'} | null>(null);
-  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const { items } = useFavorites();
+  const [notification] = useState<{message: string, type: 'add' | 'remove'} | null>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
-  // Предзагрузка контента
-  useEffect(() => {
-    if (items.length > 0) {
-      const preloadCount = Math.min(12, items.length);
-      for (let i = 0; i < preloadCount; i++) {
-        setTimeout(() => {
-          setVisibleCards(prev => new Set(prev).add(i));
-        }, i * 100);
-      }
-    }
-  }, [items]);
-
-  // Показать уведомление
-  const showNotification = (message: string, type: 'add' | 'remove') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
-  };
 
   // Группировка по категориям
   const groupedFavorites = items.reduce((acc: Record<string, typeof items>, title) => {
@@ -40,11 +24,7 @@ const Favorites: React.FC = () => {
   const categories = Object.keys(groupedFavorites).sort();
 
   // Варианты анимации для Framer Motion
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, scale: 0.8 }
-  };
+  // TODO: Использовать cardVariants для анимации карточек
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
@@ -66,6 +46,7 @@ const Favorites: React.FC = () => {
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.3 }}
               className="fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg backdrop-blur-md bg-white/10 border border-white/20"
             >
               <p className={`font-medium ${
@@ -82,8 +63,9 @@ const Favorites: React.FC = () => {
         {items.length === 0 ? (
           // Красивый пустой статус
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
             className="text-center py-16"
           >
             <div className="mb-8">
@@ -99,7 +81,7 @@ const Favorites: React.FC = () => {
             <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
               Начните добавлять аниме в избранное, чтобы создать свою персональную коллекцию
             </p>
-            <button className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-pink-500/20">
+            <button className={`px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 ${prefersReducedMotion ? '' : 'transition-all duration-300 shadow-lg shadow-pink-500/20'}`}>
               Перейти в каталог
             </button>
           </motion.div>
@@ -109,8 +91,9 @@ const Favorites: React.FC = () => {
             {categories.map((category) => (
               <motion.div
                 key={category}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
                 className="space-y-6"
               >
                 <div className="flex items-center space-x-4">
@@ -124,16 +107,10 @@ const Favorites: React.FC = () => {
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8">
                   <AnimatePresence mode="popLayout">
-                    {groupedFavorites[category].map((title, index) => (
+                    {groupedFavorites[category].map((title, _index) => (
                       <AnimeCard
                         key={title.id}
                         title={title}
-                        index={index}
-                        showRemoveButton={true}
-                        onRemove={() => {
-                          removeFavorite(title.id);
-                          showNotification(`"${title.names.ru}" удалено из избранного`, 'remove');
-                        }}
                       />
                     ))}
                   </AnimatePresence>

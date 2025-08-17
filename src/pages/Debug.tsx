@@ -2,7 +2,7 @@ import React from 'react';
 
 const DebugPage: React.FC = () => {
   return (
-    <div className="p-6 text-white bg-dark min-h-screen">
+    <div className="p-6 text-dark bg-dark min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Debug page</h1>
       <p><strong>Vite env:</strong></p>
       <pre>{JSON.stringify(import.meta.env, null, 2)}</pre>

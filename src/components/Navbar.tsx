@@ -1,140 +1,135 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { MagnifyingGlassIcon, Cog6ToothIcon, HomeIcon, FilmIcon, StarIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { HomeIcon as HomeIconSolid, FilmIcon as FilmIconSolid, StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { motion } from 'framer-motion';
+import { usePrefersReducedMotion } from '../utils/motion';
+import { useLocation } from 'react-router-dom';
+import { useTheme } from '../hooks/useTheme';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
 import ThemeToggle from './ThemeToggle';
 
 const Navbar: React.FC = () => {
+  const location = useLocation();
+  const reduceMotion = usePrefersReducedMotion();
+  const { theme, setTheme } = useTheme();
+  
+  // Варианты анимаций для Navbar с учетом prefers-reduced-motion
+  const navbarVariants = {
+    hidden: { y: reduceMotion ? 0 : -100, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
+
+  // Варианты анимаций для ссылок с учетом prefers-reduced-motion
+  const linkVariants = {
+    hidden: { y: reduceMotion ? 0 : 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
+
+  // Проверка активной ссылки
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
-    <header className="backdrop-blur-lg bg-white/10 dark:bg-gray-900/10 border-b border-white/20 dark:border-gray-700/20 sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.nav
+      variants={reduceMotion ? { visible: { y: 0, opacity: 1 } } : navbarVariants}
+      initial={reduceMotion ? undefined : "hidden"}
+      animate={reduceMotion ? undefined : "visible"}
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.5, ease: "easeInOut" }}
+      className="navbar backdrop-blur bg-white/10 dark:bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50"
+    >
+      <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Логотип с градиентной заливкой */}
-          <Link
-            to="/"
-            className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
+          {/* Логотип/Название */}
+          <motion.div
+            variants={reduceMotion ? {} : { visible: { transition: { delay: 0.1 } } }}
+            className="flex items-center space-x-2"
           >
-            <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
-              AniStream
-            </span>
-          </Link>
-
-          {/* Навигационное меню для десктопа */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <NavLink
-              to="/"
-              className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
-                ${isActive
-                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
-                }
-              `}
+            <motion.div
+              whileHover={!reduceMotion ? { scale: 1.05 } : {}}
+              whileTap={!reduceMotion ? { scale: 0.95 } : {}}
+              transition={!reduceMotion ? { duration: 0.2 } : { duration: 0 }}
+              className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center"
             >
-              {({ isActive }) => (
-                <>
-                  {isActive ? <HomeIconSolid className="w-5 h-5" /> : <HomeIcon className="w-5 h-5" />}
-                  <span>Главная</span>
-                </>
-              )}
-            </NavLink>
-
-            <NavLink
-              to="/catalog"
-              className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
-                ${isActive
-                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
-                }
-              `}
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </motion.div>
+            <motion.span
+              className="font-bold text-xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+              initial={reduceMotion ? undefined : { opacity: 0 }}
+              animate={reduceMotion ? undefined : { opacity: 1 }}
+              transition={reduceMotion ? { duration: 0 } : { delay: 0.2, duration: 0.5 }}
             >
-              {({ isActive }) => (
-                <>
-                  {isActive ? <FilmIconSolid className="w-5 h-5" /> : <FilmIcon className="w-5 h-5" />}
-                  <span>Каталог</span>
-                </>
-              )}
-            </NavLink>
+              AnimeSite
+            </motion.span>
+          </motion.div>
 
-            <NavLink
-              to="/search"
-              className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
-                ${isActive
-                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
-                }
-              `}
-            >
-              {({ isActive }) => (
-                <>
-                  <MagnifyingGlassIcon className="w-5 h-5" />
-                  <span>Поиск</span>
-                </>
-              )}
-            </NavLink>
+          {/* Навигационные ссылки */}
+          <motion.div
+            variants={reduceMotion ? { visible: { opacity: 1 } } : linkVariants}
+            animate={reduceMotion ? undefined : "visible"}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.3, ease: "easeInOut" }}
+            className="hidden md:flex items-center space-x-1"
+          >
+            {[
+              { path: '/', label: 'Главная' },
+              { path: '/catalog', label: 'Каталог' },
+              { path: '/favorites', label: 'Избранное' },
+              { path: '/settings', label: 'Настройки' },
+              { path: '/accessibility', label: 'Доступность' }
+            ].map((item) => (
+              <motion.div key={item.path} whileHover={!reduceMotion ? { scale: 1.05 } : {}}>
+                <motion.a
+                  href={item.path}
+                   className={`px-4 py-2 text-sm font-medium ${
+                     reduceMotion ? '' : 'transition-all duration-300 ease-in-out'
+                   } ${
+                     isActive(item.path)
+                       ? 'border-b-2 border-purple-500 text-purple-400'
+                       : 'text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-white hover:bg-purple-500/10 dark:hover:bg-white/5'
+                   }`}
+                  whileHover={!reduceMotion ? { scale: 1.05 } : {}}
+                  whileTap={!reduceMotion ? { scale: 0.95 } : {}}
+                  transition={!reduceMotion ? { duration: 0.2, ease: "easeInOut" } : { duration: 0 }}
+                >
+                  {item.label}
+                </motion.a>
+              </motion.div>
+            ))}
+          </motion.div>
 
-            <NavLink
-              to="/favorites"
-              className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
-                ${isActive
-                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
-                }
-              `}
-            >
-              {({ isActive }) => (
-                <>
-                  {isActive ? <StarIconSolid className="w-5 h-5" /> : <StarIcon className="w-5 h-5" />}
-                  <span>Избранное</span>
-                </>
-              )}
-            </NavLink>
-
-            <NavLink
-              to="/settings"
-              className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
-                ${isActive
-                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
-                }
-              `}
-            >
-              {({ isActive }) => (
-                <>
-                  <Cog6ToothIcon className="w-5 h-5" />
-                  <span>Настройки</span>
-                </>
-              )}
-            </NavLink>
-          </nav>
-
-          {/* Правая часть с кнопками */}
+          {/* Поиск и переключатель темы */}
           <div className="flex items-center space-x-2">
-            <ThemeToggle />
+            <motion.button
+              whileHover={!reduceMotion ? { scale: 1.05 } : {}}
+              whileTap={!reduceMotion ? { scale: 0.95 } : {}}
+              transition={!reduceMotion ? { duration: 0.2 } : { duration: 0 }}
+              className="p-2 rounded-lg hover:bg-white/5 transition-colors transition-all duration-300 ease-in-out"
+              aria-label="Поиск"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  // Здесь можно добавить логику открытия поиска
+                  console.log('Open search');
+                }
+              }}
+            >
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </motion.button>
             
-            {/* Кнопка поиска для мобильных устройств */}
-            <Link
-              to="/search"
-              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30 transition-all duration-200 ease-out"
-            >
-              <MagnifyingGlassIcon className="w-6 h-6" />
-            </Link>
-
-            {/* Кнопка настроек для мобильных устройств */}
-            <Link
-              to="/settings"
-              className="hidden sm:block p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30 transition-all duration-200 ease-out"
-            >
-              <Cog6ToothIcon className="w-6 h-6" />
-            </Link>
+            <ThemeToggle />
           </div>
         </div>
       </div>
-    </header>
+    </motion.nav>
   );
 };
 

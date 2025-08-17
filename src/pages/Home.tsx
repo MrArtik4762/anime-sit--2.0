@@ -1,32 +1,118 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { useUpdates } from '../services/titles';
 import AnimeCard from '../components/AnimeCard';
-import { useInView } from 'react-intersection-observer';
+import SkeletonLoader from '../components/SkeletonLoader';
+import { usePrefersReducedMotion } from '../utils/motion';
+import { useTitle } from '../hooks/useTitle';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+// Варианты анимаций для staggered списка с учетом prefers-reduced-motion
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+// Варианты анимации для отдельной карточки с учетом prefers-reduced-motion
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 },
+};
+
+// Упрощенные варианты для prefers-reduced-motion
+const reducedContainerVariants = {
+  hidden: { opacity: 1 },
+  show: {
+    opacity: 1,
+  },
+};
+
+const reducedItemVariants = {
+  hidden: { opacity: 1, y: 0 },
+  show: { opacity: 1, y: 0 },
+};
 
 const Home: React.FC = () => {
+  useTitle('Аниме');
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useUpdates(12);
-  const { ref, inView } = useInView();
-  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const reduceMotion = usePrefersReducedMotion();
 
-  React.useEffect(() => {
-    if (inView && hasNextPage) fetchNextPage();
-  }, [inView, hasNextPage]);
-
-  // Предзагрузка контента
-  useEffect(() => {
-    if (data) {
-      const items = data?.pages.flatMap((p: any) => p.data ?? p) ?? [];
-      // Предзагружаем первые 12 карточек
-      const preloadCount = Math.min(12, items.length);
-      for (let i = 0; i < preloadCount; i++) {
-        setTimeout(() => {
-          setVisibleCards(prev => new Set(prev).add(i));
-        }, i * 100);
+  // Оптимизация с использованием useCallback и useMemo
+  const items = useMemo(() => {
+    return data?.pages.flatMap((p: any) => {
+      // Если API возвращает массив данных напрямую
+      if (Array.isArray(p)) {
+        return p;
       }
-    }
+      // Если API возвращает объект с полем data
+      if (p?.data && Array.isArray(p.data)) {
+        return p.data;
+      }
+      // Fallback для других случаев
+      console.warn('Unexpected page structure:', p);
+      return [];
+    }) ?? [];
   }, [data]);
 
-  const items = data?.pages.flatMap((p: any) => p.data ?? p) ?? [];
+  // Состояние для отображения скелетонов при первой загрузке
+  const [showSkeletons, setShowSkeletons] = useState(true);
+
+  // Скрытие скелетонов после первой загрузки данных
+  React.useEffect(() => {
+    if (items.length > 0 && showSkeletons) {
+      const timer = setTimeout(() => {
+        setShowSkeletons(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [items.length, showSkeletons]);
+
+  // Оптимизированный обработчик загрузки следующей страницы
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // Отображение скелетонов при первой загрузке
+  const renderSkeletons = () => {
+    if (!showSkeletons) return null;
+    return Array.from({ length: 12 }).map((_, index) => (
+      <motion.div
+        key={`skeleton-${index}`}
+        variants={reduceMotion ? reducedItemVariants : itemVariants}
+        className="w-full"
+      >
+        <SkeletonLoader type="card" className="w-full" />
+      </motion.div>
+    ));
+  };
+
+  // Отображение карточек аниме
+  const renderAnimeCards = () => {
+    return items.map((t: { id: number; names: { ru?: string; en?: string }; year: number; type: string; posters?: { medium?: { url?: string }; small?: { url?: string } } }) => (
+      <motion.div key={t.id} variants={reduceMotion ? reducedItemVariants : itemVariants}>
+        <AnimeCard title={t as any} />
+      </motion.div>
+    ));
+  };
+
+  if (items.length === 0 && !showSkeletons) {
+    return (
+      <section className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
@@ -41,41 +127,35 @@ const Home: React.FC = () => {
           </p>
         </div>
 
-        {/* Сетка карточек с адаптивным layout */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8">
-          {items.map((t: any, index: number) => (
-            <div
-              key={t.id}
-              className={`transition-all duration-700 ease-out ${
-                visibleCards.has(index)
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: `${index * 50}ms` }}
-            >
-              <AnimeCard title={t} />
-            </div>
-          ))}
-        </div>
-
-        {/* Индикатор загрузки */}
-        <div ref={ref} className="h-16" />
-        <div className="mt-12 text-center">
-          {isFetchingNextPage ? (
-            <div className="flex items-center justify-center space-x-2 text-gray-400">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+        {/* InfiniteScroll компонент */}
+        <InfiniteScroll
+          dataLength={items.length}
+          next={handleLoadMore}
+          hasMore={hasNextPage}
+          loader={
+            <div className="flex items-center justify-center space-x-2 text-gray-400 my-8">
+              <div className={`${reduceMotion ? '' : 'animate-spin'} rounded-full h-6 w-6 border-b-2 border-purple-500`}></div>
               <span className="text-lg">Загрузка...</span>
             </div>
-          ) : hasNextPage ? (
-            <p className="text-gray-400 text-lg font-medium animate-pulse">
-              Прокрутите вниз для загрузки
-            </p>
-          ) : (
-            <p className="text-gray-500 text-lg">
-              Больше нет данных
-            </p>
-          )}
-        </div>
+          }
+          endMessage={
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">Больше нет данных</p>
+            </div>
+          }
+          scrollThreshold={0.8}
+          scrollableTarget="scrollable-div"
+        >
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8"
+            variants={reduceMotion ? reducedContainerVariants : containerVariants}
+            initial="hidden"
+            animate="show"
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.5 }}
+          >
+            {showSkeletons ? renderSkeletons() : renderAnimeCards()}
+          </motion.div>
+        </InfiniteScroll>
 
         {/* Декоративный элемент */}
         <div className="mt-16 text-center">

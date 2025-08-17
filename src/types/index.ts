@@ -27,5 +27,5 @@ export interface Title {
   genres?: string[];
   year?: number;
   status?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }

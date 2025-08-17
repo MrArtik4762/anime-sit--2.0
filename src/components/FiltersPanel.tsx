@@ -1,8 +1,10 @@
 import React from 'react';
 import { useFiltersStore } from '../stores/filters';
+import { usePrefersReducedMotion } from '../utils/motion';
 
 const FiltersPanel: React.FC = () => {
   const { genres, toggleGenre, reset } = useFiltersStore();
+  const prefersReducedMotion = usePrefersReducedMotion();
   
   // Пример жанров - в реальном приложении можно получить из API
   const availableGenres = [
@@ -18,7 +20,7 @@ const FiltersPanel: React.FC = () => {
         </h3>
         <button
           onClick={reset}
-          className="px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-400 rounded-lg hover:from-pink-500/30 hover:to-purple-500/30 transition-all duration-300 border border-pink-500/30"
+           className={`px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-400 rounded-lg hover:from-pink-500/30 hover:to-purple-500/30 transition-all duration-300 ease-in-out border border-pink-500/30`}
         >
           Сбросить
         </button>
@@ -31,10 +33,10 @@ const FiltersPanel: React.FC = () => {
             <button
               key={genre}
               onClick={() => toggleGenre(genre)}
-              className={`px-3 py-2 rounded-lg transition-all duration-300 text-sm font-medium ${
+               className={`px-3 py-2 rounded-lg transition-all duration-300 ease-in-out text-sm font-medium transition-all duration-300 ease-in-out ${
                 genres.includes(genre)
                   ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 text-pink-300'
-                  : 'bg-white/5 hover:bg-white/10 text-gray-400 border border-transparent'
+                  : 'bg-white/5 hover:bg-purple-500/10 dark:hover:bg-white/10 text-gray-400 border border-transparent'
               }`}
             >
               {genre}
@@ -46,13 +48,13 @@ const FiltersPanel: React.FC = () => {
       <div>
         <h4 className="font-medium mb-3 text-lg text-gray-300">Сортировка</h4>
         <div className="space-y-2">
-          <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 text-gray-300 font-medium">
+          <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-purple-500/10 dark:hover:bg-white/10 rounded-lg transition-all duration-300 ease-in-out text-gray-300 font-medium">
             По популярности
           </button>
-          <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 text-gray-300 font-medium">
+          <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-purple-500/10 dark:hover:bg-white/10 rounded-lg transition-all duration-300 ease-in-out text-gray-300 font-medium">
             По дате добавления
           </button>
-          <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 text-gray-300 font-medium">
+          <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-purple-500/10 dark:hover:bg-white/10 rounded-lg transition-all duration-300 ease-in-out text-gray-300 font-medium">
             По рейтингу
           </button>
         </div>
@@ -64,7 +66,7 @@ const FiltersPanel: React.FC = () => {
           {['2024', '2023', '2022', '2021', '2020', '2019'].map(year => (
             <button
               key={year}
-              className="px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 text-sm text-gray-400 border border-transparent"
+               className={`px-3 py-2 bg-white/5 hover:bg-purple-500/10 dark:hover:bg-white/10 rounded-lg transition-all duration-300 ease-in-out text-sm text-gray-400 border border-transparent`}
             >
               {year}
             </button>

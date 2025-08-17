@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThemeToggle Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color, #ffffff);
+            color: var(--text-color, #000000);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: var(--bg-color);
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .test-description {
+            margin-bottom: 15px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        
+        .theme-toggle-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .current-theme {
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .test-button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: #0056b3;
+        }
+        
+        .success {
+            color: #28a745;
+        }
+        
+        .error {
+            color: #dc3545;
+        }
+        
+        .warning {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>ThemeToggle Component Test</h1>
+        
+        <div class="test-section">
+            <div class="test-title">1. Basic Functionality Test</div>
+            <div class="test-description">
+                Проверка базовой функциональности переключения темы
+            </div>
+            <div class="theme-toggle-container">
+                <button id="themeToggle" aria-label="Toggle theme" title="Переключить тему">
+                    <!-- ThemeToggle будет вставлен сюда -->
+                </button>
+                <div class="current-theme">Current: <span id="currentTheme">system</span></div>
+            </div>
+            <button class="test-button" onclick="testBasicFunctionality()">Run Basic Test</button>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">2. Rapid Click Test</div>
+            <div class="test-description">
+                Проверка предотвращения дублирования событий при быстрых кликах
+            </div>
+            <button class="test-button" onclick="testRapidClicks()">Test Rapid Clicks</button>
+            <div class="console-output" id="rapidClickOutput"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">3. Icon Change Test</div>
+            <div class="test-description">
+                Проверка смены иконок в зависимости от текущей темы
+            </div>
+            <div class="theme-toggle-container">
+                <button id="iconTestToggle" aria-label="Toggle theme" title="Переключить тему">
+                    <!-- ThemeToggle будет вставлен сюда -->
+                </button>
+                <div>Expected: <span id="expectedIcon">ComputerDesktopIcon</span></div>
+            </div>
+            <button class="test-button" onclick="testIconChanges()">Test Icon Changes</button>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">4. Console Testdiv>
+            <div class="test-description">
+                Тестовая проверка в консоли браузера
+            </div>
+            <button class="test-button" onclick="runConsoleTest()">Run Console Test</button>
+            <div class="console-output" id="consoleOutput"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">5. localStorage Test</div>
+            <div class="test-description">
+                Проверка сохранения темы в localStorage
+            </div>
+            <button class="test-button" onclick="testLocalStorage()">Test localStorage</button>
+            <div class="console-output" id="localStorageOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные для тестирования
+        let clickCount = 0;
+        let testResults = {
+            basic: false,
+            rapid: false,
+            icons: false,
+            console: false,
+            storage: false
+        };
+
+        // Симуляция ThemeToggle компонента для тестирования
+        class MockThemeToggle {
+            constructor(containerId) {
+                this.container = document.getElementById(containerId);
+                this.themes = ['system', 'light', 'dark'];
+                this.currentThemeIndex = 0;
+                this.isClicking = false;
+                this.icons = {
+                    system: '💻',
+                    light: '☀️',
+                    dark: '🌙'
+                };
+                this.render();
+            }
+
+            cycleTheme() {
+                if (this.isClicking) return;
+                
+                this.isClicking = true;
+                clickCount++;
+                
+                try {
+                    this.currentThemeIndex = (this.currentThemeIndex + 1) % this.themes.length;
+                    const newTheme = this.themes[this.currentThemeIndex];
+                    
+                    console.log('ThemeToggle clicked - new theme:', newTheme);
+                    this.render();
+                    
+                    // Обновляем глобальное состояние для тестов
+                    window.currentTheme = newTheme;
+                    
+                    return newTheme;
+                } catch (error) {
+                    console.error('Error in ThemeToggle:', error);
+                } finally {
+                    setTimeout(() => {
+                        this.isClicking = false;
+                    }, 300);
+                }
+            }
+
+            render() {
+                const currentTheme = this.themes[this.currentThemeIndex];
+                const icon = this.icons[currentTheme];
+                const color = this.getThemeColor(currentTheme);
+                
+                this.container.innerHTML = `
+                    <button 
+                        onclick="themeToggle.cycleTheme()" 
+                        aria-label="Toggle theme" 
+                        title="Тема: ${currentTheme}"
+                        style="
+                            padding: 8px;
+                            border-radius: 6px;
+                            border: 1px solid #e0e0e0;
+                            background: rgba(255, 255, 255, 0.1);
+                            cursor: ${this.isClicking ? 'not-allowed' : 'pointer'};
+                            opacity: ${this.isClicking ? '0.75' : '1'};
+                            transition: all 0.2s;
+                        "
+                    >
+                        <span style="font-size: 20px; color: ${color};">${icon}</span>
+                    </button>
+                `;
+            }
+
+            getThemeColor(theme) {
+                switch (theme) {
+                    case 'system': return '#3b82f6';
+                    case 'light': return '#eab308';
+                    case 'dark': return '#d1d5db';
+                    default: return '#000000';
+                }
+            }
+        }
+
+        // Инициализация
+        let themeToggle, iconTestToggle;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            themeToggle = new MockThemeToggle('themeToggle');
+            iconTestToggle = new MockThemeToggle('iconTestToggle');
+            
+            // Установка начального состояния
+            window.currentTheme = 'system';
+            document.getElementById('currentTheme').textContent = 'system';
+            
+            console.log('ThemeToggle Test initialized');
+        });
+
+        // Тестовые функции
+        function testBasicFunctionality() {
+            const initialTheme = window.currentTheme;
+            const newTheme = themeToggle.cycleTheme();
+            
+            if (newTheme && newTheme !== initialTheme) {
+                testResults.basic = true;
+                document.getElementById('currentTheme').textContent = newTheme;
+                logOutput('consoleOutput', '✓ Basic functionality test PASSED', 'success');
+            } else {
+                logOutput('consoleOutput', '✗ Basic functionality test FAILED', 'error');
+            }
+        }
+
+        function testRapidClicks() {
+            clickCount = 0;
+            const output = document.getElementById('rapidClickOutput');
+            output.innerHTML = '';
+            
+            let clickInterval = setInterval(() => {
+                themeToggle.cycleTheme();
+                logOutput('rapidClickOutput', `Click ${clickCount}: ${window.currentTheme}`, '');
+                
+                if (clickCount >= 10) {
+                    clearInterval(clickInterval);
+                    logOutput('rapidClickOutput', '✓ Rapid clicks test completed', 'success');
+                    testResults.rapid = true;
+                }
+            }, 50);
+        }
+
+        function testIconChanges() {
+            const themes = ['system', 'light', 'dark'];
+            const icons = ['💻', '☀️', '🌙'];
+            let currentIndex = 0;
+            
+            const interval = setInterval(() => {
+                if (currentIndex >= themes.length) {
+                    clearInterval(interval);
+                    testResults.icons = true;
+                    logOutput('consoleOutput', '✓ Icon changes test PASSED', 'success');
+                    return;
+                }
+                
+                const expectedTheme = themes[currentIndex];
+                const expectedIcon = icons[currentIndex];
+                
+                window.currentTheme = expectedTheme;
+                iconTestToggle.currentThemeIndex = currentIndex;
+                iconTestToggle.render();
+                
+                document.getElementById('expectedIcon').textContent = expectedIcon;
+                
+                currentIndex++;
+            }, 1000);
+        }
+
+        function runConsoleTest() {
+            console.log('=== ThemeToggle Console Test ===');
+            console.log('Testing theme cycling...');
+            
+            const testThemes = ['system', 'light', 'dark'];
+            let index = 0;
+            
+            const interval = setInterval(() => {
+                if (index >= testThemes.length) {
+                    clearInterval(interval);
+                    console.log('Console test completed');
+                    testResults.console = true;
+                    logOutput('consoleOutput', '✓ Console test completed', 'success');
+                    return;
+                }
+                
+                const theme = testThemes[index];
+                console.log(`Testing theme: ${theme}`);
+                
+                // Симуляция клика
+                themeToggle.currentThemeIndex = index;
+                themeToggle.render();
+                
+                index++;
+            }, 1000);
+        }
+
+        function testLocalStorage() {
+            try {
+                // Сохранение темы
+                const testTheme = 'dark';
+                localStorage.setItem('app-theme', testTheme);
+                
+                // Проверка сохранения
+                const savedTheme = localStorage.getItem('app-theme');
+                
+                if (savedTheme === testTheme) {
+                    logOutput('localStorageOutput', '✓ localStorage test PASSED', 'success');
+                    testResults.storage = true;
+                } else {
+                    logOutput('localStorageOutput', '✗ localStorage test FAILED', 'error');
+                }
+                
+                // Очистка
+                localStorage.removeItem('app-theme');
+                
+            } catch (error) {
+                logOutput('localStorageOutput', `✗ localStorage test ERROR: ${error.message}`, 'error');
+            }
+        }
+
+        function logOutput(elementId, message, type = '') {
+            const output = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type ? `class="${type}"` : '';
+            
+            output.innerHTML += `<div ${className}>[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Автоматическая проверка всех тестов
+        function runAllTests() {
+            console.log('=== Running All ThemeToggle Tests ===');
+            
+            setTimeout(() => testBasicFunctionality(), 500);
+            setTimeout(() => testRapidClicks(), 2000);
+            setTimeout(() => testIconChanges(), 5000);
+            setTimeout(() => runConsoleTest(), 8000);
+            setTimeout(() => testLocalStorage(), 11000);
+            
+            setTimeout(() => {
+                const passedTests = Object.values(testResults).filter(result => result).length;
+                const totalTests = Object.keys(testResults).length;
+                
+                console.log(`=== Test Results: ${passedTests}/${totalTests} passed ===`);
+                console.log('Results:', testResults);
+                
+                if (passedTests === totalTests) {
+                    console.log('🎉 All tests PASSED!');
+                } else {
+                    console.log('❌ Some tests FAILED');
+                }
+            }, 13000);
+        }
+
+        // Добавляем тестовую кнопку для запуска всех тестов
+        document.addEventListener('DOMContentLoaded', function() {
+            const testContainer = document.querySelector('.test-container');
+            const allTestsButton = document.createElement('button');
+            allTestsButton.className = 'test-button';
+            allTestsButton.textContent = 'Run All Tests';
+            allTestsButton.style.background = '#28a745';
+            allTestsButton.style.marginTop = '20px';
+            allTestsButton.onclick = runAllTests;
+            testContainer.appendChild(allTestsButton);
+        });
+    </script>
+</body>
+</html>

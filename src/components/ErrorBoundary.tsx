@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { usePrefersReducedMotion } from '../utils/motion';
 
 interface Props {
   children: ReactNode;
@@ -12,11 +13,17 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false,
-    error: null,
-    errorInfo: null
-  };
+  private prefersReducedMotion: boolean;
+
+  constructor(props: Props) {
+    super(props);
+    this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.state = {
+      hasError: false,
+      error: null,
+      errorInfo: null
+    };
+  }
 
   public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error, errorInfo: null };
@@ -54,16 +61,16 @@ class ErrorBoundary extends Component<Props, State> {
               или вернуться на главную.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button 
+              <button
                 onClick={this.handleReload}
-                className="error-button transition-all duration-300 hover:scale-105"
+                className={`error-button ${this.prefersReducedMotion ? '' : 'transition-all duration-300 hover:scale-105'}`}
               >
                 Обновить страницу
               </button>
-              <button 
+              <button
                 onClick={this.handleGoHome}
-                className="error-button transition-all duration-300 hover:scale-105"
-                style={{ 
+                className={`error-button ${this.prefersReducedMotion ? '' : 'transition-all duration-300 hover:scale-105'}`}
+                style={{
                   background: 'var(--bg-tertiary)',
                   color: 'var(--text-primary)'
                 }}
@@ -71,9 +78,9 @@ class ErrorBoundary extends Component<Props, State> {
                 На главную
               </button>
             </div>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.MODE === 'development' && this.state.error && (
               <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                <summary className="cursor-pointer text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                   Техническая информация (для разработчиков)
                 </summary>
                 <pre className="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">

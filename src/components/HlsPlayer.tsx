@@ -1,7 +1,7 @@
 import React from 'react';
 import Hls from 'hls.js';
 
-const HlsPlayer: React.FC<{ sources: any[] }> = ({ sources }) => {
+const HlsPlayer: React.FC<{ sources: { url: string }[] }> = ({ sources }) => {
   const ref = React.useRef<HTMLVideoElement | null>(null);
   const url = sources?.[0]?.url ?? null;
 

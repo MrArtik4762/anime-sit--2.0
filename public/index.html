@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#121212" />
     <meta name="description" content="Современный аниме стриминговый клиент на базе Anilibria API" />
     <title>AniStream — современный клиент Anilibria</title>
+    <!-- Скрипт для удаления no-js класса при загрузке JavaScript -->
+    <script>
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body class="m-0 p-0 font-sans antialiased">
     <div id="root"></div>

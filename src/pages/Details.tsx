@@ -10,7 +10,7 @@ const Details: React.FC = () => {
   if (isLoading) return <div>Загрузка...</div>;
   if (error) return <div>Ошибка загрузки</div>;
 
-  const title = (data as any)?.data ?? data; // зависит от shape
+  const title = data; // зависит от shape
 
   return (
     <div>

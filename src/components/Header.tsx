@@ -3,8 +3,8 @@ import React from 'react';
 const Header: React.FC = () => {
   return (
     <header style={{
-      backgroundColor: '#8B5CF6',
-      color: 'white',
+      backgroundColor: 'var(--accent)',
+      color: 'var(--text)',
       padding: '1rem',
       textAlign: 'center',
       marginBottom: '2rem',

@@ -1,4 +1,18 @@
+/**
+ * Компонент ParticlesBg - оптимизированный фон с анимированными частицами
+ * 
+ * Основные оптимизации:
+ * - Adaptive particle count (10 на мобильных, 30 на десктопах)
+ * - Throttling анимации до 60 FPS
+ * - Уменьшенный размер частиц и скорости для лучшей производительности
+ * - Intersection Observer для паузы при невидимости элемента
+ * - Условный рендеринг только для мобильных устройств
+ * - Оптимизированные вычисления distanceSquared для избежания sqrt
+ * - Кэширование значений для уменьшения вычислений в рендере
+ * - Уменьшенная сила взаимодействия с мышью
+ */
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { usePrefersReducedMotion } from '../utils/motion';
 
 interface Particle {
   x: number;
@@ -14,6 +28,7 @@ interface Particle {
 
 const ParticlesBg: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const animationFrameRef = useRef<number>();
   const particlesRef = useRef<Particle[]>([]);
   const [isPaused, setIsPaused] = useState(false);
@@ -31,15 +46,13 @@ const ParticlesBg: React.FC = () => {
   
   // Определяем количество частиц в зависимости от устройства и размера экрана
   const particleCount = useMemo(() => {
+    if (prefersReducedMotion) return 0; // Отключаем частицы при prefers-reduced-motion
     const isMobile = dimensions.width < 768;
     return isMobile ? 10 : 30;
-  }, [dimensions.width]);
+  }, [dimensions.width, prefersReducedMotion]);
 
   // Определяем количество частиц в зависимости от размера экрана
-  const getParticleCount = useCallback(() => {
-    const isMobile = dimensions.width < 768;
-    return isMobile ? 10 : 30;
-  }, [dimensions.width]);
+  // TODO: Использовать getParticleCount для динамического расчета
 
   // Инициализация частиц
   const initParticles = useCallback(() => {
@@ -74,7 +87,6 @@ const ParticlesBg: React.FC = () => {
     }
     
     particlesRef.current = newParticles;
-    setParticles(newParticles);
   }, [particleCount, dimensions.width, dimensions.height]);
 
   // Обработка изменения размера окна
@@ -174,9 +186,8 @@ const ParticlesBg: React.FC = () => {
       };
     });
     
-    // Обновляем particlesRef и state
+    // Обновляем particlesRef
     particlesRef.current = updatedParticles;
-    setParticles(updatedParticles);
     
     // Рисуем линии между близкими частицами с оптимизацией
     ctx.globalCompositeOperation = 'screen';
@@ -290,7 +301,7 @@ const ParticlesBg: React.FC = () => {
     }
   }, [isPaused, animate]);
 
-  return (
+  return prefersReducedMotion ? null : (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-[-1]"

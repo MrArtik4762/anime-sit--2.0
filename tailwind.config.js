@@ -1,73 +1,62 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
-  content: [
-    './index.html',
-    './src/**/*.{ts,tsx,jsx,js}',
-  ],
+  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
       colors: {
-        primary: '#8B5CF6',
-        primary2: '#7C3AED',
-        accent: '#6EE7B7',
-        bgLight: '#f7f7fb',
-        bgDark: '#0f1724',
-        glassLight: 'rgba(255,255,255,0.06)',
-        glassDark: 'rgba(255,255,255,0.04)',
-      },
-      borderRadius: {
-        xl2: '1rem',
-      },
-      fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-        jp: ['"Noto Sans JP"', 'sans-serif']
+        // Светлая тема
+        'site-bg': '#f8fafc',      // slate-50
+        'card-bg': '#ffffff',      // white
+        'text-primary': '#111827', // gray-900
+        'text-secondary': '#4b5563', // gray-600
+        'text-heading': '#1e293b', // slate-800
+        'border-color': '#e2e8f0', // gray-200
+        'primary': '#3b82f6',      // blue-500
+        'primary-hover': '#2563eb', // blue-600
+        'secondary': '#f1f5f9',    // slate-100
+        'secondary-hover': '#e2e8f0', // slate-200
+        'accent': '#8b5cf6',       // violet-500
+        'text-hover': '#2563eb',  // Цвет текста при наведении в светлой теме
+        'hover-bg': '#f3f4f6',    // Фон при наведении в светлой теме
+        
+        // Существующие цвета для обратной совместимости
+        bgLight: '#ffffff',
+        bgDark: '#071029',
+        textLight: '#111111',
+        textDark: '#e6eef8',
       },
       animation: {
-        gradientShift: 'gradientShift 12s ease infinite',
-        float: 'float 6s ease-in-out infinite',
-        fadeInUp: 'fadeInUp 450ms cubic-bezier(.2,.9,.2,1) both',
-        glassPulse: 'glassPulse 2.6s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.5s ease-out',
+        'scale-in': 'scaleIn 0.3s ease-out',
       },
       keyframes: {
-        gradientShift: {
-          '0%, 100%': {
-            'background-size': '200% 200%',
-            'background-position': 'left center'
-          },
-          '50%': {
-            'background-size': '200% 200%',
-            'background-position': 'right center'
-          }
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        float: {
-          '0%, 100%': {
-            transform: 'translateY(0px)'
-          },
-          '50%': {
-            transform: 'translateY(-20px)'
-          }
+        slideUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         },
-        fadeInUp: {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(30px)'
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)'
-          }
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
-        glassPulse: {
-          '0%, 100%': {
-            opacity: '1'
-          },
-          '50%': {
-            opacity: '0.8'
-          }
-        }
-      }
+      },
+      transitionProperty: {
+        'color': 'color, background-color, border-color, text-decoration-color, fill, stroke',
+        'bg': 'background-color, background-position, background-image',
+        'opacity': 'opacity',
+        'shadow': 'box-shadow',
+      },
+      transitionDuration: {
+        '300': '300ms',
+        '500': '500ms',
+        '700': '700ms',
+      },
     },
   },
   plugins: [],
-}
+};
