@@ -18,7 +18,7 @@ const SearchPage: React.FC = () => {
         className="w-full p-3 rounded bg-gray-800 outline-none"
         placeholder="Поиск аниме..."
       />
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
         {isLoading ? Array.from({ length: 8 }).map((_, i) => <div key={i} className="bg-gray-700 h-48 rounded animate-pulse" />) : results.map((t:any)=> <AnimeCard key={t.id} title={t} />)}
       </div>
     </div>

@@ -1,43 +1,96 @@
-import React from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-type State = { hasError: boolean; error?: Error | null; info?: React.ErrorInfo | null };
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
 
-class ErrorBoundary extends React.Component<{}, State> {
-  constructor(props: {}) {
-    super(props);
-    this.state = { hasError: false, error: null, info: null };
+interface State {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+}
+
+class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+    error: null,
+    errorInfo: null
+  };
+
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('Uncaught error:', error, errorInfo);
+    this.setState({
+      error,
+      errorInfo
+    });
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, info);
-    this.setState({ error, info });
-    try {
-      // сохраняем для последующего анализа
-      localStorage.setItem('lastAppError', JSON.stringify({ message: error.message, stack: error.stack, info }));
-    } catch {}
-  }
+  private handleReload = () => {
+    window.location.reload();
+  };
 
-  render() {
-    if (!this.state.hasError) return this.props.children;
-    return (
-      <div className="p-6 bg-red-900 text-white min-h-screen">
-        <h1 className="text-2xl font-bold mb-4">Ошибка приложения — Debug</h1>
-        <pre className="whitespace-pre-wrap overflow-auto text-sm" style={{ maxHeight: '70vh' }}>
-          {this.state.error?.message}
-          {'\n\n'}
-          {this.state.error?.stack}
-          {'\n\n'}
-          {this.state.info ? JSON.stringify(this.state.info, null, 2) : ''}
-        </pre>
-        <div className="mt-4">
-          <button onClick={() => location.reload()} className="px-3 py-2 rounded bg-primary">Перезагрузить</button>
+  private handleGoHome = () => {
+    window.location.href = '/';
+  };
+
+  public render() {
+    if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
+      return (
+        <div className="error-container min-h-screen flex items-center justify-center p-4">
+          <div className="max-w-md w-full text-center">
+            <div className="error-icon mb-4">⚠️</div>
+            <h1 className="error-title mb-2">Упс! Что-то пошло не так</h1>
+            <p className="error-message mb-6">
+              Произошла непредвиденная ошибка. Пожалуйста, попробуйте обновить страницу 
+              или вернуться на главную.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button 
+                onClick={this.handleReload}
+                className="error-button transition-all duration-300 hover:scale-105"
+              >
+                Обновить страницу
+              </button>
+              <button 
+                onClick={this.handleGoHome}
+                className="error-button transition-all duration-300 hover:scale-105"
+                style={{ 
+                  background: 'var(--bg-tertiary)',
+                  color: 'var(--text-primary)'
+                }}
+              >
+                На главную
+              </button>
+            </div>
+            {process.env.NODE_ENV === 'development' && this.state.error && (
+              <details className="mt-6 text-left">
+                <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                  Техническая информация (для разработчиков)
+                </summary>
+                <pre className="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
+                  <strong>Ошибка:</strong> {this.state.error.message}
+                  <br />
+                  <strong>Стек вызовов:</strong>
+                  <br />
+                  {this.state.error.stack}
+                </pre>
+              </details>
+            )}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    return this.props.children;
   }
 }
 

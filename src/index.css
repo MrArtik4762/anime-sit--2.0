@@ -51,6 +51,39 @@
               box-shadow 0.3s ease, transform 0.3s ease !important;
 }
 
+/* Universal transition classes */
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+.transition-default {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+              border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
+}
+
+.transition-scale {
+  transition: transform 0.3s ease-in-out;
+}
+
+.transition-opacity {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.transition-colors {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+              border-color 0.3s ease-in-out;
+}
+
+.transition-transform {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Smooth scrolling for the entire application */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Animated gradient background */
 .app-gradient {
   background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-end), #f093fb, #f5576c);
@@ -89,9 +122,10 @@
   box-shadow: 0 8px 32px 0 var(--shadow-color);
 }
 
-/* Utility classes */
+/* Universal hover effects */
 .hover-uplift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  will-change: transform, box-shadow;
 }
 
 .hover-uplift:hover {
@@ -99,10 +133,257 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
+.hover-scale {
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-rotate {
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease-in-out;
+  will-change: box-shadow;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(77, 171, 247, 0.5);
+}
+
+.hover-opacity {
+  transition: opacity 0.3s ease-in-out;
+  will-change: opacity;
+}
+
+.hover-opacity:hover {
+  opacity: 0.8;
+}
+
+/* Button styles with animations */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  will-change: transform, background-color;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Link styles with animations */
+.link {
+  position: relative;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+  will-change: color;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: width 0.3s ease-in-out;
+}
+
+.link:hover {
+  color: var(--accent-hover);
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+/* Global animations */
 .fade-in-up {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.6s ease forwards;
+  will-change: opacity, transform;
+}
+
+.fade-in-down {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInDown 0.6s ease forwards;
+  will-change: opacity, transform;
+}
+
+.fade-in-left {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeInLeft 0.6s ease forwards;
+  will-change: opacity, transform;
+}
+
+.fade-in-right {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: fadeInRight 0.6s ease forwards;
+  will-change: opacity, transform;
+}
+
+.slide-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideInUp 0.5s ease forwards;
+  will-change: opacity, transform;
+}
+
+.slide-in-down {
+  opacity: 0;
+  transform: translateY(-30px);
+  animation: slideInDown 0.5s ease forwards;
+  will-change: opacity, transform;
+}
+
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: slideInLeft 0.5s ease forwards;
+  will-change: opacity, transform;
+}
+
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+  animation: slideInRight 0.5s ease forwards;
+  will-change: opacity, transform;
+}
+
+.scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+  animation: scaleIn 0.5s ease forwards;
+  will-change: opacity, transform;
+}
+
+.bounce-in {
+  opacity: 0;
+  transform: scale(0.3);
+  animation: bounceIn 0.6s ease forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes fadeInUp {
@@ -193,3 +474,237 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   }
 }
+
+/* Skeleton loaders */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-secondary) 50%, var(--bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+  will-change: background-position;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-title {
+  height: 1.5rem;
+  margin-bottom: 1rem;
+  width: 60%;
+}
+
+.skeleton-card {
+  height: 300px;
+  margin-bottom: 1rem;
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-button {
+  height: 40px;
+  width: 120px;
+}
+
+/* Loading indicators */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--bg-tertiary);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+  will-change: transform;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Error states */
+.error-container {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.error-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.error-message {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.error-button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  will-change: transform, background-color;
+}
+
+.error-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Preloader overlay */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  will-change: opacity;
+}
+
+.preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.preloader-content {
+  text-align: center;
+}
+
+.preloader-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+  animation: pulse 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Micro-interactions */
+.interactive-element {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.interactive-element::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.interactive-element:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Focus styles for accessibility */
+.focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.5);
+}
+
+/* Lazy loading image placeholder */
+.lazy-image {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  will-change: opacity;
+}
+
+.lazy-image.loaded {
+  opacity: 1;
+}
+
+.lazy-image.loading {
+  filter: blur(5px);
+}
+
+/* Staggered animations for lists */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
