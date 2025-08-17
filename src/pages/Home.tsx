@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useUpdates } from '../services/titles';
 import AnimeCard from '../components/AnimeCard';
 import { useInView } from 'react-intersection-observer';
@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   const items = data?.pages.flatMap((p: any) => p.data ?? p) ?? [];
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Заголовок с градиентной заливкой */}
         <div className="text-center mb-12">

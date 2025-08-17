@@ -5,28 +5,22 @@ import { useLocation } from 'react-router-dom';
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 30,
-    scale: 0.95,
-    filter: 'blur(10px)'
+    y: 20
   },
   animate: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    filter: 'blur(0px)',
     transition: {
-      duration: 0.4,
+      duration: 0.3,
       ease: "easeOut",
-      staggerChildren: 0.1
+      staggerChildren: 0.05
     }
   },
   exit: {
     opacity: 0,
-    y: -30,
-    scale: 0.95,
-    filter: 'blur(10px)',
+    y: -20,
     transition: {
-      duration: 0.3,
+      duration: 0.2,
       ease: "easeIn"
     }
   }
@@ -36,7 +30,7 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.05
     }
   }
 };
@@ -53,7 +47,6 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
         animate="animate"
         exit="exit"
         className="w-full"
-        style={{ willChange: 'opacity, transform, filter' }}
       >
         <motion.div
           variants={containerVariants}

@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
           {/* Логотип с градиентной заливкой */}
           <Link
             to="/"
-            className="flex items-center space-x-2 transition-transform hover:scale-105"
+            className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
           >
             <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
               AniStream
@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/"
               className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
                 ${isActive
                   ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/catalog"
               className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
                 ${isActive
                   ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/search"
               className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
                 ${isActive
                   ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/favorites"
               className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
                 ${isActive
                   ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
@@ -96,7 +96,7 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/settings"
               className={({ isActive }) => `
-                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out
                 ${isActive
                   ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-500 dark:text-pink-400 shadow-md'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30'
@@ -119,7 +119,7 @@ const Navbar: React.FC = () => {
             {/* Кнопка поиска для мобильных устройств */}
             <Link
               to="/search"
-              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30 transition-all duration-300 ease-in-out"
+              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30 transition-all duration-200 ease-out"
             >
               <MagnifyingGlassIcon className="w-6 h-6" />
             </Link>
@@ -127,7 +127,7 @@ const Navbar: React.FC = () => {
             {/* Кнопка настроек для мобильных устройств */}
             <Link
               to="/settings"
-              className="hidden sm:block p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30 transition-all duration-300 ease-in-out"
+              className="hidden sm:block p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800/30 transition-all duration-200 ease-out"
             >
               <Cog6ToothIcon className="w-6 h-6" />
             </Link>

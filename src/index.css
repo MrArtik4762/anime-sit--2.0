@@ -1,3 +1,30 @@
+/* CSS Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
 /* CSS Variables for Theme */
 :root {
   /* Light theme colors */
@@ -708,3 +735,389 @@ body {
 .stagger-3 { animation-delay: 0.3s; }
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
+
+/* Responsive font sizes and spacing */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .glass, .glass-outline {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  
+  .hover-uplift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 13px;
+  }
+  
+  .container {
+    padding: 0 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass {
+    background: var(--bg-secondary);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .glass-outline {
+    background: transparent;
+    border: 2px solid var(--border-color);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Text overflow utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Оптимизированные анимации для производительности */
+/* Оптимизированные transition классы */
+.transition-fast {
+  transition: all 0.15s ease-out;
+}
+
+.transition-normal {
+  transition: all 0.2s ease-out;
+}
+
+.transition-slow {
+  transform: all 0.3s ease-out;
+}
+
+/* Оптимизированные fade-in анимации */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+  will-change: opacity;
+}
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.3s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.fade-in-down {
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeInDown 0.3s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.fade-in-left {
+  opacity: 0;
+  transform: translateX(-10px);
+  animation: fadeInLeft 0.3s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.fade-in-right {
+  opacity: 0;
+  transform: translateX(10px);
+  animation: fadeInRight 0.3s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+/* Оптимизированные slide анимации */
+.slide-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.25s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.slide-down {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDown 0.25s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.slide-left {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideLeft 0.25s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.slide-right {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideRight 0.25s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+/* Оптимизированные scale анимации */
+.scale-in {
+  opacity: 0;
+  transform: scale(0.95);
+  animation: scaleIn 0.2s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.scale-up {
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+.scale-up:hover {
+  transform: scale(1.05);
+}
+
+.scale-down {
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+.scale-down:hover {
+  transform: scale(0.95);
+}
+
+/* Оптимизированные hover эффекты */
+.hover-lift {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  will-change: transform, box-shadow;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.hover-glow {
+  transition: box-shadow 0.2s ease-out;
+  will-change: box-shadow;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(77, 171, 247, 0.3);
+}
+
+/* Оптимизированные stagger анимации для списков */
+.stagger-container > * {
+  opacity: 0;
+}
+
+.stagger-fade-in > * {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.stagger-fade-in-up > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+.stagger-slide-up > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.25s ease-out forwards;
+}
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+.stagger-9 { animation-delay: 0.45s; }
+.stagger-10 { animation-delay: 0.5s; }
+
+/* Оптимизированные keyframes */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Улучшенная поддержка prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .transition-fast,
+  .transition-normal,
+  .transition-slow,
+  .fade-in,
+  .fade-in-up,
+  .fade-in-down,
+  .fade-in-left,
+  .fade-in-right,
+  .slide-up,
+  .slide-down,
+  .slide-left,
+  .slide-right,
+  .scale-in,
+  .scale-up,
+  .scale-down,
+  .hover-lift,
+  .hover-glow,
+  .stagger-fade-in > *,
+  .stagger-fade-in-up > *,
+  .stagger-slide-up > * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .scale-up:hover,
+  .scale-down:hover,
+  .hover-lift:hover,
+  .hover-glow:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Оптимизированные анимации для мобильных устройств */
+@media (max-width: 768px) {
+  .fade-in,
+  .fade-in-up,
+  .fade-in-down,
+  .fade-in-left,
+  .fade-in-right,
+  .slide-up,
+  .slide-down,
+  .slide-left,
+  .slide-right,
+  .scale-in {
+    animation-duration: 0.2s !important;
+  }
+  
+  .stagger-1 { animation-delay: 0.03s; }
+  .stagger-2 { animation-delay: 0.06s; }
+  .stagger-3 { animation-delay: 0.09s; }
+  .stagger-4 { animation-delay: 0.12s; }
+  .stagger-5 { animation-delay: 0.15s; }
+  .stagger-6 { animation-delay: 0.18s; }
+  .stagger-7 { animation-delay: 0.21s; }
+  .stagger-8 { animation-delay: 0.24s; }
+  .stagger-9 { animation-delay: 0.27s; }
+  .stagger-10 { animation-delay: 0.3s; }
+}

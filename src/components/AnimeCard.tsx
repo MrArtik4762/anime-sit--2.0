@@ -18,11 +18,10 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
-  const [prefetched, setPrefetched] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const prefetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const prefetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const poster = useMemo(() => {
     return title.posters?.medium?.url ? `https://anilibria.top${title.posters.medium.url}` : '/placeholder.jpg';
@@ -116,21 +115,19 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
 
   // Оптимизированные варианты анимации
   const cardVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: { 
-        duration: 0.4, 
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
         ease: "easeOut",
-        delay: index * 0.05 
-      } 
+        delay: index * 0.03
+      }
     },
-    exit: { 
-      opacity: 0, 
-      scale: 0.9,
-      transition: { duration: 0.2 }
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.15 }
     }
   }), [index]);
 
@@ -150,11 +147,11 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
         aria-label={title.names.ru || title.names.en || 'Title'}
       >
         <div
-          className={`relative overflow-hidden rounded-2xl shadow-xl backdrop-blur-lg bg-white/5 border border-white/10 transition-all duration-500 ease-out ${
+          className={`relative overflow-hidden rounded-2xl shadow-xl backdrop-blur-lg bg-white/5 border border-white/10 transition-all duration-200 ease-out ${
             isHovered ? 'scale-105 shadow-2xl border-white/20' : 'scale-100'
           }`}
         >
-          <div className="relative w-full h-56 md:h-64 lg:h-72 bg-gradient-to-br from-gray-800 to-gray-900">
+          <div className="relative w-full aspect-[2/3] bg-gradient-to-br from-gray-800 to-gray-900">
             {/* Прелоадер */}
             {!loaded && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -168,7 +165,7 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
               data-src={poster}
               src={loaded ? poster : undefined}
               alt={title.names.ru || title.names.en || 'Title'}
-              className={`w-full h-full object-cover transition-all duration-700 ease-out ${
+              className={`w-full h-full object-cover transition-all duration-300 ease-out ${
                 loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}
               loading="lazy"
@@ -178,7 +175,7 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
             />
             
             {/* Градиентная маска */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
             
             {/* Кнопка удаления для избранного */}
             <AnimatePresence>
@@ -204,20 +201,20 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
               className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"
               initial={{ opacity: 0 }}
               animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.15 }}
             />
             
             {/* Информация о карточке */}
             <div className="absolute bottom-0 left-0 right-0 p-4">
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
-              <h3 className="relative font-bold text-lg md:text-xl lg:text-2xl mb-2 truncate bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+              <h3 className="relative font-bold text-lg md:text-xl lg:text-2xl mb-2 line-clamp-2 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                 {title.names.ru || title.names.en}
               </h3>
-              <p className="relative text-sm md:text-base text-gray-400 font-medium mb-1">
+              <p className="relative text-sm md:text-base text-gray-400 font-medium mb-1 overflow-hidden">
                 Серии: {title.player?.episodes?.last ?? '—'}
               </p>
               {title.names.en && title.names.en !== title.names.ru && (
-                <p className="relative text-xs text-gray-500 font-medium">
+                <p className="relative text-xs text-gray-500 font-medium overflow-hidden">
                   {title.names.en}
                 </p>
               )}
@@ -229,4 +226,5 @@ const AnimeCard: React.FC<AnimeCardProps> = ({
   );
 };
 
-export default AnimeCard;
+const MemoizedAnimeCard = React.memo(AnimeCard);
+export default MemoizedAnimeCard;

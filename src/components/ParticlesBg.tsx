@@ -15,44 +15,65 @@ interface Particle {
 const ParticlesBg: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>();
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const [isPaused, setIsPaused] = useState(false);
   const [dimensions, setDimensions] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
     height: typeof window !== 'undefined' ? window.innerHeight : 0,
   });
   const mousePosition = useRef({ x: -100, y: -100, radius: 150 });
+  const intersectionObserverRef = useRef<IntersectionObserver>();
+  const lastFrameTimeRef = useRef<number>(0);
+  const frameInterval = 1000 / 60; // 60 FPS
   
-  // Оптимизация: кэшируем часто используемые значения
+  // Оптимизация: ограничиваем devicePixelRatio до 1.5
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  
+  // Определяем количество частиц в зависимости от устройства и размера экрана
   const particleCount = useMemo(() => {
-    return dimensions.width < 768 ? 20 : 30; // Уменьшено для лучшей производительности
+    const isMobile = dimensions.width < 768;
+    return isMobile ? 10 : 30;
   }, [dimensions.width]);
 
   // Определяем количество частиц в зависимости от размера экрана
   const getParticleCount = useCallback(() => {
-    return dimensions.width < 768 ? 25 : 45; // Уменьшено для лучшей производительности
+    const isMobile = dimensions.width < 768;
+    return isMobile ? 10 : 30;
   }, [dimensions.width]);
 
   // Инициализация частиц
   const initParticles = useCallback(() => {
     const newParticles: Particle[] = [];
+    const count = particleCount;
     
-    for (let i = 0; i < particleCount; i++) {
+    // Оптимизация: кэшируем значения для уменьшения вычислений
+    const width = dimensions.width;
+    const height = dimensions.height;
+    
+    for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 0.2 + 0.05; // Уменьшена скорость для лучшей производительности
+      const speed = Math.random() * 0.15 + 0.03; // Уменьшена скорость для лучшей производительности
+      
+      // Оптимизация: вычисляем значения один раз
+      const cosAngle = Math.cos(angle);
+      const sinAngle = Math.sin(angle);
+      const vx = cosAngle * speed;
+      const vy = sinAngle * speed;
+      
       newParticles.push({
-        x: Math.random() * dimensions.width,
-        y: Math.random() * dimensions.height,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        originalVx: Math.cos(angle) * speed,
-        originalVy: Math.sin(angle) * speed,
-        radius: Math.random() * 1 + 0.5, // Уменьшен размер частиц
-        opacity: Math.random() * 0.5 + 0.3,
-        targetOpacity: Math.random() * 0.5 + 0.3,
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx,
+        vy,
+        originalVx: vx,
+        originalVy: vy,
+        radius: Math.random() * 0.8 + 0.3, // Уменьшен размер частиц
+        opacity: Math.random() * 0.4 + 0.2,
+        targetOpacity: Math.random() * 0.4 + 0.2,
       });
     }
     
+    particlesRef.current = newParticles;
     setParticles(newParticles);
   }, [particleCount, dimensions.width, dimensions.height]);
 
@@ -82,9 +103,17 @@ const ParticlesBg: React.FC = () => {
     };
   }, []);
 
-  // Анимация частиц
-  const animate = useCallback(() => {
+  // Анимация частиц с throttling
+  const animate = useCallback((timestamp: number) => {
     if (isPaused) return;
+    
+    // Throttling: ограничиваем частоту кадров
+    if (timestamp - lastFrameTimeRef.current < frameInterval) {
+      animationFrameRef.current = requestAnimationFrame(animate);
+      return;
+    }
+    
+    lastFrameTimeRef.current = timestamp;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -97,8 +126,9 @@ const ParticlesBg: React.FC = () => {
     ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Обновляем и рисуем частицы
-    const updatedParticles = particles.map(particle => {
+    // Используем particlesRef для прямого доступа к частицам
+    const currentParticles = particlesRef.current;
+    const updatedParticles = currentParticles.map(particle => {
       // Вычисляем расстояние до мыши с оптимизацией
       const dx = particle.x - mousePosition.current.x;
       const dy = particle.y - mousePosition.current.y;
@@ -112,12 +142,12 @@ const ParticlesBg: React.FC = () => {
         const distance = Math.sqrt(distanceSquared);
         const force = (mousePosition.current.radius - distance) / mousePosition.current.radius;
         const angle = Math.atan2(dy, dx);
-        newVx = particle.originalVx + Math.cos(angle) * force * 1.5; // Уменьшена сила взаимодействия
-        newVy = particle.originalVy + Math.sin(angle) * force * 1.5;
+        newVx = particle.originalVx + Math.cos(angle) * force * 1.2; // Уменьшена сила взаимодействия
+        newVy = particle.originalVy + Math.sin(angle) * force * 1.2;
       } else {
         // Возвращаем к исходной скорости с ослаблением
-        newVx += (particle.originalVx - particle.vx) * 0.03;
-        newVy += (particle.originalVy - particle.vy) * 0.03;
+        newVx += (particle.originalVx - particle.vx) * 0.02; // Уменьшена скорость возврата
+        newVy += (particle.originalVy - particle.vy) * 0.02;
       }
       
       // Обновляем позицию
@@ -132,7 +162,7 @@ const ParticlesBg: React.FC = () => {
       
       // Плавное изменение прозрачности
       const opacityDiff = particle.targetOpacity - particle.opacity;
-      particle.opacity += opacityDiff * 0.05;
+      particle.opacity += opacityDiff * 0.03; // Уменьшена скорость изменения прозрачности
       
       return {
         ...particle,
@@ -144,15 +174,17 @@ const ParticlesBg: React.FC = () => {
       };
     });
     
+    // Обновляем particlesRef и state
+    particlesRef.current = updatedParticles;
     setParticles(updatedParticles);
     
     // Рисуем линии между близкими частицами с оптимизацией
     ctx.globalCompositeOperation = 'screen';
-    const maxDistanceSquared = 120 * 120;
+    const maxDistanceSquared = 100 * 100; // Уменьшено для уменьшения количества линий
     
     for (let i = 0; i < updatedParticles.length; i++) {
-      // Оптимизация: проверяем только следующие N частиц вместо всех
-      const checkRange = Math.min(6, updatedParticles.length - i - 1);
+      // Оптимизация: уменьшаем количество проверяемых частиц
+      const checkRange = Math.min(4, updatedParticles.length - i - 1);
       
       for (let j = i + 1; j <= i + checkRange; j++) {
         const dx = updatedParticles[i].x - updatedParticles[j].x;
@@ -161,11 +193,11 @@ const ParticlesBg: React.FC = () => {
         
         if (distanceSquared < maxDistanceSquared) {
           const distance = Math.sqrt(distanceSquared);
-          const opacity = (1 - distance / 120) * 0.3 * Math.min(updatedParticles[i].opacity, updatedParticles[j].opacity);
+          const opacity = (1 - distance / 100) * 0.2 * Math.min(updatedParticles[i].opacity, updatedParticles[j].opacity);
           
           ctx.beginPath();
           ctx.strokeStyle = `rgba(77, 171, 247, ${opacity})`;
-          ctx.lineWidth = 0.5;
+          ctx.lineWidth = 0.4;
           ctx.moveTo(updatedParticles[i].x, updatedParticles[i].y);
           ctx.lineTo(updatedParticles[j].x, updatedParticles[j].y);
           ctx.stroke();
@@ -177,29 +209,56 @@ const ParticlesBg: React.FC = () => {
     updatedParticles.forEach(particle => {
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity * 0.8})`;
+      ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity * 0.7})`;
       ctx.fill();
     });
     
     animationFrameRef.current = requestAnimationFrame(animate);
-  }, [isPaused, particles]);
+  }, [isPaused]);
 
   // Обработка видимости вкладки
   const handleVisibilityChange = useCallback(() => {
     setIsPaused(document.hidden);
   }, []);
 
+  // IntersectionObserver для паузы при невидимости элемента
+  const setupIntersectionObserver = useCallback(() => {
+    if (canvasRef.current) {
+      intersectionObserverRef.current = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+              setIsPaused(true);
+            } else if (!document.hidden) {
+              setIsPaused(false);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      
+      intersectionObserverRef.current.observe(canvasRef.current);
+    }
+  }, []);
+
   useEffect(() => {
-    // Установка размеров canvas
+    // Установка размеров canvas с учетом DPR
     const updateCanvasSize = () => {
       if (canvasRef.current) {
-        canvasRef.current.width = dimensions.width;
-        canvasRef.current.height = dimensions.height;
+        canvasRef.current.width = dimensions.width * dpr;
+        canvasRef.current.height = dimensions.height * dpr;
+        canvasRef.current.style.width = `${dimensions.width}px`;
+        canvasRef.current.style.height = `${dimensions.height}px`;
+        const ctx = canvasRef.current.getContext('2d');
+        if (ctx) {
+          ctx.scale(dpr, dpr);
+        }
       }
     };
 
     updateCanvasSize();
     initParticles();
+    setupIntersectionObserver();
 
     // Обработчики событий
     window.addEventListener('resize', handleResize);
@@ -218,8 +277,11 @@ const ParticlesBg: React.FC = () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+      if (intersectionObserverRef.current) {
+        intersectionObserverRef.current.disconnect();
+      }
     };
-  }, [dimensions, initParticles, handleResize, handleVisibilityChange, handleMouseMove, handleMouseLeave, animate]);
+  }, [dimensions, initParticles, handleResize, handleVisibilityChange, handleMouseMove, handleMouseLeave, animate, setupIntersectionObserver, dpr]);
 
   // Перезапуск анимации при изменении состояния паузы
   useEffect(() => {
