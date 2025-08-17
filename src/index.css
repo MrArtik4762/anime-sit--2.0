@@ -1,22 +1,195 @@
-/* Минимальные стили для теста */
+/* CSS Variables for Theme */
+:root {
+  /* Light theme colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #6c757d;
+  --text: var(--text-primary);
+  --muted: var(--text-muted);
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --accent-color: #007bff;
+  --accent-hover: #0056b3;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --gradient-start: #667eea;
+  --gradient-end: #764ba2;
+  --toggle-bg: #e9ecef;
+  --toggle-thumb: #ffffff;
+  --poster-overlay: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.dark {
+  /* Dark theme colors */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #888888;
+  --text: var(--text-primary);
+  --muted: var(--text-muted);
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --accent-color: #4dabf7;
+  --accent-hover: #339af0;
+  --glass-bg: rgba(30, 30, 30, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --gradient-start: #667eea;
+  --gradient-end: #764ba2;
+  --toggle-bg: #495057;
+  --toggle-thumb: #ffffff;
+  --poster-overlay: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+/* Theme transitions */
+.theme-transition * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, 
+              box-shadow 0.3s ease, transform 0.3s ease !important;
+}
+
+/* Animated gradient background */
+.app-gradient {
+  background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-end), #f093fb, #f5576c);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glass effects */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 var(--shadow-color);
+}
+
+.glass-outline {
+  background: transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 var(--shadow-color);
+}
+
+/* Utility classes */
+.hover-uplift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-uplift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glow-focus {
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.poster-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: var(--poster-overlay);
+  pointer-events: none;
+}
+
+.toggle-track {
+  width: 48px;
+  height: 24px;
+  background: var(--toggle-bg);
+  border-radius: 12px;
+  position: relative;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.toggle-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--toggle-thumb);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Base styles */
 body {
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: Arial, sans-serif;
 }
 
 #root {
   min-height: 100vh;
   padding: 20px;
-  border: 1px solid red; /* видимая граница для теста */
 }
 
-/* Общие стили для тестового контента */
+/* Test styles (keeping for compatibility) */
 .test-container {
-  border: 2px solid blue;
+  border: 2px solid var(--border-color);
   padding: 20px;
   margin: 20px;
-  background-color: #f0f8ff;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+/* Additional utility classes */
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .glass, .glass-outline {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  
+  .hover-uplift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
 }
