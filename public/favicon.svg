@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Фон -->
+  <rect width="512" height="512" fill="#1a1a2e"/>
+  
+  <!-- Катана -->
+  <g transform="translate(256, 256)">
+    <!-- Лезвие -->
+    <path d="M -8 -180 L -8 -60 L -4 -60 L -4 -180 Z" fill="#8B5CF6"/>
+    <path d="M 4 -180 L 4 -60 L 8 -60 L 8 -180 Z" fill="#7C3AED"/>
+    
+    <!-- Гарда (защитная перекладня) -->
+    <ellipse cx="0" cy="-60" rx="25" ry="8" fill="#6D28D9"/>
+    <ellipse cx="0" cy="-60" rx="20" ry="6" fill="#8B5CF6"/>
+    
+    <!-- Рукоять -->
+    <rect x="-6" y="-40" width="12" height="40" fill="#8B4513"/>
+    <rect x="-6" y="-40" width="12" height="40" fill="#A0522D" opacity="0.7"/>
+    
+    <!-- Детали рукояти -->
+    <rect x="-6" y="-35" width="12" height="3" fill="#FFD700"/>
+    <rect x="-6" y="-28" width="12" height="3" fill="#FFD700"/>
+    <rect x="-6" y="-21" width="12" height="3" fill="#FFD700"/>
+    <rect x="-6" y="-14" width="12" height="3" fill="#FFD700"/>
+    <rect x="-6" y="-7" width="12" height="3" fill="#FFD700"/>
+    
+    <!-- Наконечник рукояти -->
+    <circle cx="0" cy="0" r="6" fill="#8B4513"/>
+    <circle cx="0" cy="0" r="4" fill="#FFD700"/>
+    
+    <!-- Световой эффект лезвия -->
+    <path d="M -6 -180 L -6 -80 L -3 -80 L -3 -180 Z" fill="#E9D5FF" opacity="0.6"/>
+    <path d="M 3 -180 L 3 -80 L 6 -80 L 6 -180 Z" fill="#E9D5FF" opacity="0.6"/>
+    
+    <!-- Аниме-стильные линии -->
+    <line x1="-40" y1="-200" x2="-30" y2="-190" stroke="#8B5CF6" stroke-width="2" opacity="0.8"/>
+    <line x1="-30" y1="-200" x2="-20" y2="-190" stroke="#8B5CF6" stroke-width="2" opacity="0.8"/>
+    <line x1="20" y1="-200" x2="30" y2="-190" stroke="#8B5CF6" stroke-width="2" opacity="0.8"/>
+    <line x1="30" y1="-200" x2="40" y2="-190" stroke="#8B5CF6" stroke-width="2" opacity="0.8"/>
+  </g>
+  
+  <!-- Декоративные элементы -->
+  <g opacity="0.3">
+    <circle cx="100" cy="100" r="3" fill="#8B5CF6"/>
+    <circle cx="412" cy="100" r="3" fill="#8B5CF6"/>
+    <circle cx="100" cy="412" r="3" fill="#8B5CF6"/>
+    <circle cx="412" cy="412" r="3" fill="#8B5CF6"/>
+  </g>
+</svg>

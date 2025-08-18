@@ -1,9 +1,11 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
+  gradient?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -11,9 +13,10 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   children,
   className = '',
+  gradient = false,
   ...props
 }) => {
-  const baseClasses = 'font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 interactive-element';
+  const baseClasses = 'font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 relative overflow-hidden';
   
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
@@ -22,17 +25,43 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: `rounded-xl bg-primary hover:bg-primary-hover text-white shadow-md hover:shadow-lg focus:ring-primary/50 transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-purple-500/25 focus:shadow-lg focus:shadow-purple-500/25 dark:hover:shadow-lg dark:hover:shadow-purple-500/25 dark:focus:shadow-lg dark:focus:shadow-purple-500/25 ${className}`,
-    secondary: `rounded-xl bg-secondary hover:bg-secondary-hover text-text-secondary focus:ring-secondary/50 transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-purple-500/25 focus:shadow-lg focus:shadow-purple-500/25 dark:hover:shadow-lg dark:hover:shadow-purple-500/25 dark:focus:shadow-lg dark:focus:shadow-purple-500/25 ${className}`
+    primary: `rounded-xl text-white shadow-lg hover:shadow-xl focus:ring-primary/50 transition-all duration-300 ease-in-out ${className}`,
+    secondary: `rounded-xl text-text-secondary bg-secondary hover:bg-secondary-hover focus:ring-secondary/50 transition-all duration-300 ease-in-out ${className}`
   };
 
   return (
-    <button
+    <motion.button
       className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]}`}
+      whileHover={!props.disabled ? { scale: 1.05, y: -1 } : {}}
+      whileTap={!props.disabled ? { scale: 0.95 } : {}}
+      transition={{
+        duration: 0.2,
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }}
       {...props}
     >
-      {children}
-    </button>
+      {/* Градиентный оверлей для primary кнопок */}
+      {variant === 'primary' && gradient && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0"
+          initial={false}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        />
+      )}
+      
+      {/* Волновой эффект при клике */}
+      <motion.span
+        className="relative z-10"
+        initial={false}
+        animate={props.disabled ? {} : { scale: [1, 0.95, 1] }}
+        transition={{ duration: 0.3 }}
+      >
+        {children}
+      </motion.span>
+    </motion.button>
   );
 };
 

@@ -2,3 +2,4 @@ export { useDebounce } from './useDebounce';
 export { useFavorites } from './useFavorites';
 export { useLocalStorage } from './useLocalStorage';
 export { useTheme } from './useTheme';
+export { useAuth, AuthProvider } from './useAuth';
