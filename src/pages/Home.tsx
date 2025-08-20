@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useUpdates } from '../services/titles';
 import AnimeCard from '../components/AnimeCard';
@@ -6,6 +6,7 @@ import SkeletonLoader from '../components/SkeletonLoader';
 import { usePrefersReducedMotion } from '../utils/motion';
 import { useTitle } from '../hooks/useTitle';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { ErrorDisplay } from '../services/errorHandling';
 
 // Варианты анимаций для staggered списка с учетом prefers-reduced-motion
 const containerVariants = {
@@ -39,7 +40,7 @@ const reducedItemVariants = {
 
 const Home: React.FC = () => {
   useTitle('Аниме');
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useUpdates(12);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error, isError, retry } = useUpdates(12);
   const reduceMotion = usePrefersReducedMotion();
 
   // Оптимизация с использованием useCallback и useMemo
@@ -63,7 +64,7 @@ const Home: React.FC = () => {
   const [showSkeletons, setShowSkeletons] = useState(true);
 
   // Скрытие скелетонов после первой загрузки данных
-  React.useEffect(() => {
+  useEffect(() => {
     if (items.length > 0 && showSkeletons) {
       const timer = setTimeout(() => {
         setShowSkeletons(false);
@@ -117,6 +118,17 @@ const Home: React.FC = () => {
   return (
     <section className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
+        {/* Отображение ошибки */}
+        {isError && (
+          <div className="mb-8">
+            <ErrorDisplay
+              error={error}
+              onRetry={retry}
+              className="mb-6"
+            />
+          </div>
+        )}
+
         {/* Заголовок с градиентной заливкой */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">

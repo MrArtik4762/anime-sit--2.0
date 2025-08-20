@@ -5,20 +5,53 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Светлая тема
-        'site-bg': '#f8fafc',      // slate-50
-        'card-bg': '#ffffff',      // white
-        'text-primary': '#111827', // gray-900
-        'text-secondary': '#4b5563', // gray-600
-        'text-heading': '#1e293b', // slate-800
-        'border-color': '#e2e8f0', // gray-200
-        'primary': '#3b82f6',      // blue-500
-        'primary-hover': '#2563eb', // blue-600
-        'secondary': '#f1f5f9',    // slate-100
-        'secondary-hover': '#e2e8f0', // slate-200
-        'accent': '#8b5cf6',       // violet-500
-        'text-hover': '#2563eb',  // Цвет текста при наведении в светлой теме
-        'hover-bg': '#f3f4f6',    // Фон при наведении в светлой теме
+        // Основные цвета для bg-background и text-foreground
+        background: {
+          DEFAULT: 'var(--background)',
+          light: 'var(--bg-2)',
+        },
+        foreground: {
+          DEFAULT: 'var(--foreground)',
+          muted: 'var(--muted-foreground)',
+        },
+        
+        // Семантические токены для контраста ≥ 4.5
+        'bg-primary': 'var(--background)',
+        'bg-secondary': 'var(--secondary)',
+        'bg-card': 'var(--card)',
+        'bg-popover': 'var(--popover)',
+        
+        'text-primary': 'var(--foreground)',
+        'text-secondary': 'var(--secondary-foreground)',
+        'text-card': 'var(--card-foreground)',
+        'text-popover': 'var(--popover-foreground)',
+        'text-muted': 'var(--muted-foreground)',
+        
+        'border-primary': 'var(--border)',
+        'border-input': 'var(--input)',
+        'ring-primary': 'var(--ring)',
+        
+        'accent-primary': 'var(--accent)',
+        'accent-foreground': 'var(--accent-foreground)',
+        
+        // Основные цвета для совместимости
+        'site-bg': 'var(--background)',
+        'card-bg': 'var(--card)',
+        'text-primary': 'var(--foreground)',
+        'text-secondary': 'var(--muted-foreground)',
+        'text-heading': 'var(--foreground)',
+        'border-color': 'var(--border)',
+        'primary': 'var(--primary)',
+        'primary-hover': 'var(--primary-hover)',
+        'secondary': 'var(--secondary)',
+        'secondary-hover': 'var(--secondary-hover)',
+        'accent': 'var(--accent)',
+        
+        // Цвета для контраста ≥ 4.5
+        'text-high-contrast': {
+          light: '#000000',
+          dark: '#ffffff',
+        },
         
         // Существующие цвета для обратной совместимости
         bgLight: '#ffffff',

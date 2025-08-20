@@ -5,11 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { 
-  HeartIcon, 
-  ChatBubbleLeftIcon, 
-  UserAddIcon, 
-  TrophyIcon, 
+import {
+  HeartIcon,
+  ChatBubbleLeftIcon,
+  UserIcon,
+  TrophyIcon,
   ClockIcon,
   FireIcon,
   ArrowsRightLeftIcon
@@ -29,7 +29,11 @@ interface ActivityItem {
   };
 }
 
-const ActivityPage: React.FC = () => {
+interface ActivityPageProps {
+  compact?: boolean;
+}
+
+const ActivityPage: React.FC<ActivityPageProps> = ({ compact = false }) => {
   const { user } = useAuth();
   const [timeFilter, setTimeFilter] = useState<'all' | 'day' | 'week' | 'month'>('all');
 
@@ -91,7 +95,7 @@ const ActivityPage: React.FC = () => {
       case 'comment':
         return <ChatBubbleLeftIcon className="w-5 h-5 text-blue-500" />;
       case 'friend_request':
-        return <UserAddIcon className="w-5 h-5 text-green-500" />;
+        return <UserIcon className="w-5 h-5 text-green-500" />;
       case 'achievement':
         return <TrophyIcon className="w-5 h-5 text-yellow-500" />;
       case 'level_up':
@@ -177,6 +181,75 @@ const ActivityPage: React.FC = () => {
     );
   }
 
+  if (compact) {
+    // Компактный вид для профиля
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Активность
+          </h3>
+        </div>
+        
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          {isLoading ? (
+            <div className="p-6">
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full" />
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2" />
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : filteredActivities.length === 0 ? (
+            <div className="p-8 text-center">
+              <p className="text-gray-500 dark:text-gray-400">Нет активности</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              {filteredActivities.slice(0, 5).map((activity, index) => (
+                <motion.div
+                  key={activity.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`p-3 ${getActivityColor(activity.type)}`}
+                >
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                          {getActivityTitle(activity)}
+                        </h4>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {formatTimeAgo(activity.createdAt)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        {getActivityDescription(activity)}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Полный вид для отдельной страницы
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <div className="mb-8">
@@ -217,7 +290,7 @@ const ActivityPage: React.FC = () => {
         {[
           { icon: HeartIcon, label: 'Лайки', value: 0, color: 'text-red-500' },
           { icon: ChatBubbleLeftIcon, label: 'Комментарии', value: 0, color: 'text-blue-500' },
-          { icon: UserAddIcon, label: 'Друзья', value: 0, color: 'text-green-500' },
+          { icon: UserIcon, label: 'Друзья', value: 0, color: 'text-green-500' },
           { icon: TrophyIcon, label: 'Достижения', value: 0, color: 'text-yellow-500' }
         ].map((stat, index) => (
           <motion.div

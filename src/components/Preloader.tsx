@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { NodeJS } from 'node';
+import { motion } from 'framer-motion';
 import { usePrefersReducedMotion } from '../utils/motion';
 
 const Preloader: React.FC = () => {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isLoading, setIsLoading] = useState(true);
-  const resourceCheckTimerRef = useRef<number>();
+  const resourceCheckTimerRef = useRef<NodeJS.Timeout>();
   const imageLoadListenersRef = useRef<(() => void)[]>([]);
 
   useEffect(() => {
@@ -81,7 +83,7 @@ const Preloader: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-sm">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-sm">
       <div className="preloader-content">
         <div className="preloader-logo">
           <motion.div

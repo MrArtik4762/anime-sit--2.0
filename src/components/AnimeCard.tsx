@@ -5,6 +5,31 @@ import { usePrefersReducedMotion } from '../utils/motion';
 import LazyImage from './LazyImage';
 import { Title } from '../types';
 
+// Расширенный интерфейс для аниме с дополнительными полями
+interface AnimeTitle extends Title {
+  id: string | number;
+  names: {
+    ru?: string | null;
+    en?: string | null;
+    jp?: string | null;
+  };
+  year?: number | string;
+  type?: string | null;
+  genres?: string[];
+  posters?: {
+    medium?: {
+      url?: string;
+    };
+    small?: {
+      url?: string;
+    };
+    original?: {
+      url?: string;
+    };
+  };
+  [key: string]: any;
+}
+
 const AnimeCard: React.FC<{
   title: Title;
   onClick?: () => void;
@@ -46,18 +71,18 @@ const AnimeCard: React.FC<{
   };
 
   // Hover эффекты с учетом prefers-reduced-motion
-  const hoverVariants = reduceMotion ? {} : {
+  const hoverVariants = reduceMotion ? undefined : {
     y: -10,
     scale: 1.03,
     boxShadow: '0 25px 30px -5px rgba(0, 0, 0, 0.15), 0 15px 15px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(147, 51, 234, 0.2)'
   };
 
-  const tapVariants = reduceMotion ? {} : {
+  const tapVariants = reduceMotion ? undefined : {
     scale: 0.97
   };
 
   // Анимация для кнопки избранного
-  const favoriteButtonVariants = reduceMotion ? {} : {
+  const favoriteButtonVariants = reduceMotion ? undefined : {
     hidden: { scale: 0, opacity: 0 },
     visible: { scale: 1, opacity: 1 },
     exit: { scale: 0, opacity: 0 }
@@ -68,11 +93,11 @@ const AnimeCard: React.FC<{
     duration: 0.1
   } : {
     duration: 0.3,
-    ease: "easeOut"
+    ease: "easeOut" as const
   };
 
   return (
-    <Link to={`/title/${title.id}`} onMouseEnter={prefetch} className="block">
+    <Link to={`/title/${title.id || ''}`} onMouseEnter={prefetch} className="block">
       <motion.div
         variants={cardVariants}
         initial="hidden"

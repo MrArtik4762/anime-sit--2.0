@@ -13,6 +13,7 @@
  */
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { usePrefersReducedMotion } from '../utils/motion';
+import { getSafeCursorPosition } from '../utils/cursorErrorHandler';
 
 interface Particle {
   x: number;
@@ -100,9 +101,12 @@ const ParticlesBg: React.FC = () => {
 
   // Обработка движения мыши
   const handleMouseMove = useCallback((e: MouseEvent) => {
+    console.log('🖱️ ParticlesBg handleMouseMove called');
+    const { x, y } = getSafeCursorPosition(e);
+    console.log('📍 ParticlesBg mouse position updated:', { x, y });
     mousePosition.current = {
-      x: e.clientX,
-      y: e.clientY,
+      x,
+      y,
       radius: 150,
     };
   }, []);

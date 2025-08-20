@@ -67,6 +67,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
   const handleError = () => {
     setHasError(true);
     onError?.();
+    console.warn('Image failed to load:', src);
   };
 
   // CSS transition properties для изображений с учетом prefers-reduced-motion

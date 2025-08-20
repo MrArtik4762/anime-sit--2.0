@@ -3,12 +3,16 @@ import { useFavorites } from '../hooks/useFavorites';
 import AnimeCard from '../components/AnimeCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePrefersReducedMotion } from '../utils/motion';
+import { ErrorDisplay } from '../services/errorHandling';
 
-const Favorites: React.FC = () => {
+interface FavoritesProps {
+  compact?: boolean;
+}
+
+const Favorites: React.FC<FavoritesProps> = ({ compact = false }) => {
   const { items } = useFavorites();
   const [notification] = useState<{message: string, type: 'add' | 'remove'} | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-
 
   // Группировка по категориям
   const groupedFavorites = items.reduce((acc: Record<string, typeof items>, title) => {
@@ -26,6 +30,35 @@ const Favorites: React.FC = () => {
   // Варианты анимации для Framer Motion
   // TODO: Использовать cardVariants для анимации карточек
 
+  if (compact) {
+    // Компактный вид для профиля
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Избранное ({items.length})
+          </h3>
+        </div>
+        
+        {items.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {items.map((title) => (
+              <AnimeCard
+                key={title.id}
+                title={title}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
+            <p className="text-gray-500 dark:text-gray-400">У вас пока нет избранного</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Полный вид для отдельной страницы
   return (
     <section className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">

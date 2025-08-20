@@ -25,6 +25,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ animeId }) => {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const reduceMotion = usePrefersReducedMotion();
   
   const observer = useRef<IntersectionObserver>();
   const lastCommentRef = useCallback((node: HTMLDivElement) => {
@@ -43,42 +44,46 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ animeId }) => {
   useEffect(() => {
     fetchComments();
     
-    // Подключение к Socket.io для конкретного аниме
-    socket.emit('join anime', animeId);
-    
-    // Обработка новых комментариев
-    const handleNewComment = (comment: Comment) => {
-      setComments(prev => [comment, ...prev]);
-    };
-    
-    // Обработка обновленных комментариев
-    const handleCommentUpdated = (comment: Comment) => {
-      setComments(prev => prev.map(c => c.id === comment.id ? comment : c));
-    };
-    
-    // Обработка удаленных комментариев
-    const handleCommentDeleted = (commentId: string) => {
-      setComments(prev => prev.filter(c => c.id !== commentId));
-    };
-    
-    // Обработка лайков
-    const handleCommentLiked = (comment: Comment) => {
-      setComments(prev => prev.map(c => c.id === comment.id ? comment : c));
-    };
-    
-    socket.on('new comment', handleNewComment);
-    socket.on('comment updated', handleCommentUpdated);
-    socket.on('comment deleted', handleCommentDeleted);
-    socket.on('comment liked', handleCommentLiked);
-    
-    return () => {
-      socket.emit('leave anime', animeId);
-      socket.off('new comment', handleNewComment);
-      socket.off('comment updated', handleCommentUpdated);
-      socket.off('comment deleted', handleCommentDeleted);
-      socket.off('comment liked', handleCommentLiked);
-    };
-  }, [animeId]);
+    // Подключение к Socket.io для конкретного аниме, только если socket доступен
+    if (socket && socket.emit && socket.on && socket.off) {
+      socket.emit('join anime', animeId);
+      
+      // Обработка новых комментариев
+      const handleNewComment = (comment: Comment) => {
+        setComments(prev => [comment, ...prev]);
+      };
+      
+      // Обработка обновленных комментариев
+      const handleCommentUpdated = (comment: Comment) => {
+        setComments(prev => prev.map(c => c.id === comment.id ? comment : c));
+      };
+      
+      // Обработка удаленных комментариев
+      const handleCommentDeleted = (commentId: string) => {
+        setComments(prev => prev.filter(c => c.id !== commentId));
+      };
+      
+      // Обработка лайков
+      const handleCommentLiked = (comment: Comment) => {
+        setComments(prev => prev.map(c => c.id === comment.id ? comment : c));
+      };
+      
+      socket.on('new comment', handleNewComment);
+      socket.on('comment updated', handleCommentUpdated);
+      socket.on('comment deleted', handleCommentDeleted);
+      socket.on('comment liked', handleCommentLiked);
+      
+      return () => {
+        if (socket && socket.emit && socket.on && socket.off) {
+          socket.emit('leave anime', animeId);
+          socket.off('new comment', handleNewComment);
+          socket.off('comment updated', handleCommentUpdated);
+          socket.off('comment deleted', handleCommentDeleted);
+          socket.off('comment liked', handleCommentLiked);
+        }
+      };
+    }
+  }, [animeId, socket]);
 
   const fetchComments = async (page: number = 1) => {
     try {
@@ -387,7 +392,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ animeId }) => {
                     transition={{ type: "spring", stiffness: 300 }}
                   >
                     <motion.img
-                      src={`http://localhost:5000${comment.userId.avatar}`}
+                      src={comment.userId.avatar.startsWith('http') ? comment.userId.avatar : `${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}${comment.userId.avatar}`}
                       alt={comment.userId.username}
                       className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
                       whileTap={!reduceMotion ? { scale: 0.9 } : {}}

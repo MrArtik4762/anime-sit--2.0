@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  root: '.',
   plugins: [
     react(),
     // Временно отключаем PWA плагин для диагностики
@@ -54,7 +55,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(new URL(import.meta.url).pathname, './src'),
     },
   },
+  base: process.env.NODE_ENV === "production" ? "/anime-sit--2.0/" : "/",
 })

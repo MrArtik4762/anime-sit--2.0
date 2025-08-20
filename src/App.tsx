@@ -1,199 +1,147 @@
-// src/App.tsx
-import React, { Suspense, useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Catalog from './pages/Catalog';
-import Details from './pages/Details';
-import Search from './pages/Search';
-import Favorites from './pages/Favorites';
-import Settings from './pages/Settings';
-import AccessibilityTest from './pages/AccessibilityTest';
-import ProfilePage from './pages/ProfilePage';
-import FriendsPage from './pages/FriendsPage';
-import ActivityPage from './pages/ActivityPage';
-import AchievementsPage from './pages/AchievementsPage';
-import NotFound from './pages/NotFound';
-import PageTransition from './components/PageTransition';
-import NotificationProvider from './components/NotificationProvider';
-import { useAuth } from './hooks/useAuth';
+import { Routes, Route, useLocation } from "react-router-dom";
+import Header from "./components/Header";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ThemeToggle from "./components/ThemeToggle";
+// import NotificationProvider from "./components/NotificationProvider";
+import Preloader from "./components/Preloader";
+import ParticlesBg from "./components/ParticlesBg";
+import Page from "./components/Page";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
-// Ленивая загрузка компонентов админ-панели
-const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
-const AdminUsersPage = React.lazy(() => import('./pages/AdminUsersPage'));
-const AdminAnimePage = React.lazy(() => import('./pages/AdminAnimePage'));
-const AdminCommentsPage = React.lazy(() => import('./pages/AdminCommentsPage'));
-const AdminStats = React.lazy(() => import('./pages/AdminStats'));
+// Страницы
+import Home from "./pages/Home";
+import Catalog from "./pages/Catalog";
+import Details from "./pages/Details";
+import Search from "./pages/Search";
+import Favorites from "./pages/Favorites";
+import ProfilePage from "./pages/ProfilePage";
+import Settings from "./pages/Settings";
+import FriendsPage from "./pages/FriendsPage";
+import ActivityPage from "./pages/ActivityPage";
+import AchievementsPage from "./pages/AchievementsPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-  
-  return user ? <>{children}</> : <Navigate to="/profile" replace />;
-};
+// Компоненты
+import Protected from "./components/Protected";
+import CursorTest from "./components/CursorTest";
 
-const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-  
-  if (!user || user.role !== 'admin') {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Доступ запрещен</h2>
-          <p className="text-gray-600 mb-6">У вас нет прав администратора для доступа к этой странице</p>
-          <button
-            onClick={() => window.location.href = '/'}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            На главную
-          </button>
-        </div>
-      </div>
-    );
-  }
-  
-  return <>{children}</>;
-};
+// Админ страницы
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminAnimePage from "./pages/AdminAnimePage";
+import AdminCommentsPage from "./pages/AdminCommentsPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
+import AdminStats from "./pages/AdminStats";
 
-const App: React.FC = () => {
+function App() {
   const location = useLocation();
-  const { user, loading } = useAuth();
   
-  // Определяем, нужно ли показывать навбар
-  const showNavbar = !location.pathname.startsWith('/admin') || !user?.role === 'admin';
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   return (
-    <NotificationProvider>
-      <div className="theme-transition min-h-screen">
-        {showNavbar && <Navbar />}
-        
-        <div className={showNavbar ? "max-w-6xl mx-auto px-4 py-6" : ""}>
-          <PageTransition>
-            <Routes>
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+      <Header />
+      <Navbar />
+      <ParticlesBg />
+      
+      <main className="flex-grow container mx-auto px-4 py-6">
+        <Page>
+          <Routes location={location} key={location.pathname}>
+            {/* Основные страницы */}
             <Route path="/" element={<Home />} />
             <Route path="/catalog" element={<Catalog />} />
-            <Route path="/title/:id" element={<Details />} />
+            <Route path="/anime/:id" element={<Details />} />
             <Route path="/search" element={<Search />} />
             <Route path="/favorites" element={<Favorites />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/accessibility" element={<AccessibilityTest />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/friends" element={<FriendsPage />} />
-            <Route path="/activity" element={<ActivityPage />} />
-            <Route path="/achievements" element={<AchievementsPage />} />
+            <Route path="/cursor-test" element={<CursorTest />} />
             
-            {/* Админ-панель */}
+            {/* Страницы аутентификации */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            
+            {/* Пользовательские страницы (защищенные) */}
             <Route
-              path="/admin"
+              path="/profile"
               element={
-                <ProtectedRoute>
-                  <AdminRoute>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                      </div>
-                    }>
-                      <AdminDashboard />
-                    </Suspense>
-                  </AdminRoute>
-                </ProtectedRoute>
+                <Protected requireAuth={true}>
+                  <ProfilePage />
+                </Protected>
               }
             />
             <Route
-              path="/admin/users"
+              path="/profile/favorites"
               element={
-                <ProtectedRoute>
-                  <AdminRoute>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                      </div>
-                    }>
-                      <AdminUsersPage />
-                    </Suspense>
-                  </AdminRoute>
-                </ProtectedRoute>
+                <Protected requireAuth={true}>
+                  <ProfilePage />
+                </Protected>
               }
             />
             <Route
-              path="/admin/anime"
+              path="/profile/friends"
               element={
-                <ProtectedRoute>
-                  <AdminRoute>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                      </div>
-                    }>
-                      <AdminAnimePage />
-                    </Suspense>
-                  </AdminRoute>
-                </ProtectedRoute>
+                <Protected requireAuth={true}>
+                  <FriendsPage />
+                </Protected>
               }
             />
             <Route
-              path="/admin/comments"
+              path="/profile/activity"
               element={
-                <ProtectedRoute>
-                  <AdminRoute>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                      </div>
-                    }>
-                      <AdminCommentsPage />
-                    </Suspense>
-                  </AdminRoute>
-                </ProtectedRoute>
+                <Protected requireAuth={true}>
+                  <ActivityPage />
+                </Protected>
               }
             />
             <Route
-              path="/admin/stats"
+              path="/settings"
               element={
-                <ProtectedRoute>
-                  <AdminRoute>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                      </div>
-                    }>
-                      <AdminStats />
-                    </Suspense>
-                  </AdminRoute>
-                </ProtectedRoute>
+                <Protected requireAuth={true}>
+                  <Settings />
+                </Protected>
+              }
+            />
+            <Route
+              path="/friends"
+              element={
+                <Protected requireAuth={true}>
+                  <FriendsPage />
+                </Protected>
+              }
+            />
+            <Route
+              path="/activity"
+              element={
+                <Protected requireAuth={true}>
+                  <ActivityPage />
+                </Protected>
+              }
+            />
+            <Route
+              path="/achievements"
+              element={
+                <Protected requireAuth={true}>
+                  <AchievementsPage />
+                </Protected>
               }
             />
             
+            {/* Админ страницы */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/anime" element={<AdminAnimePage />} />
+            <Route path="/admin/comments" element={<AdminCommentsPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/stats" element={<AdminStats />} />
+            
+            {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </PageTransition>
-      </div>
+        </Page>
+      </main>
+      
+      <Footer />
+      <ThemeToggle />
     </div>
-    </NotificationProvider>
   );
-};
+}
 
 export default App;

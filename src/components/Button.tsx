@@ -25,8 +25,8 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: `rounded-xl text-white shadow-lg hover:shadow-xl focus:ring-primary/50 transition-all duration-300 ease-in-out ${className}`,
-    secondary: `rounded-xl text-text-secondary bg-secondary hover:bg-secondary-hover focus:ring-secondary/50 transition-all duration-300 ease-in-out ${className}`
+    primary: `rounded-xl text-white shadow-lg hover:shadow-xl focus:ring-blue-500/50 transition-all duration-300 ease-in-out ${className}`,
+    secondary: `rounded-xl text-gray-500 bg-gray-100 hover:bg-gray-200 focus:ring-gray-500/50 transition-all duration-300 ease-in-out ${className}`
   };
 
   return (

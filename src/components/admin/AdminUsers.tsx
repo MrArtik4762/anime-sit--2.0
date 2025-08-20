@@ -40,7 +40,7 @@ const AdminUsers: React.FC = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/admin/users?page=${currentPage}&limit=10&search=${searchTerm}`,
+        `${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}/api/admin/users?page=${currentPage}&limit=10&search=${searchTerm}`,
         { credentials: 'include' }
       );
 
@@ -62,7 +62,7 @@ const AdminUsers: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}/api/admin/users/${userId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -90,7 +90,7 @@ const AdminUsers: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/users/${selectedUser._id}/role`,
+        `${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}/api/admin/users/${selectedUser._id}/role`,
         {
           method: 'PUT',
           headers: {

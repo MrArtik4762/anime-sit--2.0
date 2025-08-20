@@ -50,7 +50,7 @@ const AdminComments: React.FC = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/admin/comments?page=${currentPage}&limit=10&search=${searchTerm}`,
+        `${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}/api/admin/comments?page=${currentPage}&limit=10&search=${searchTerm}`,
         { credentials: 'include' }
       );
 
@@ -68,7 +68,7 @@ const AdminComments: React.FC = () => {
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/comments/${commentId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}/api/admin/comments/${commentId}`, {
         method: 'DELETE',
         credentials: 'include',
       });

@@ -66,7 +66,7 @@ const AdminStats: React.FC = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/admin/stats', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.anilibria.tv'}/api/admin/stats`, {
         credentials: 'include',
       });
 

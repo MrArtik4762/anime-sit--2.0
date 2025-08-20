@@ -5,16 +5,6 @@ import { useAuth } from '../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 
-interface Notification {
-  id: string;
-  type: 'favorite' | 'comment' | 'reply' | 'achievement';
-  title: string;
-  message: string;
-  read: boolean;
-  createdAt: string;
-  relatedId?: string;
-}
-
 const NotificationBell: React.FC = () => {
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

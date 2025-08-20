@@ -1,16 +1,57 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="no-js">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-192x192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Anime Site</title>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#121212" />
+    <meta name="description" content="Современный аниме стриминговый клиент на базе Anilibria API" />
+    <title>AniStream — современный клиент Anilibria</title>
+    
+    <!-- Скрипт для предотвращения вспышек неправильной темы -->
+    <script>
+      // Предотвращение FOUC (Flash of Unstyled Content)
+      (function() {
+        // Определение предпочтений темы пользователя
+        const getInitialTheme = () => {
+          // Проверяем сохраненную тему в localStorage
+          const savedTheme = localStorage.getItem('app-theme');
+          if (savedTheme === 'light' || savedTheme === 'dark') {
+            return savedTheme;
+          }
+          
+          // Проверяем системные предпочтения
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+          }
+          
+          // По умолчанию светлая тема
+          return 'light';
+        };
+        
+        // Применяем тему до загрузки стилей
+        const theme = getInitialTheme();
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+        
+        // Устанавливаем тему без анимаций при начальной загрузке
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        
+        // Добавляем класс для предотвращения анимаций при начальной загрузке
+        document.documentElement.classList.add('no-theme-transition');
+        
+        // Убираем класс предотвращения анимаций после небольшой задержки
+        setTimeout(() => {
+          document.documentElement.classList.remove('no-theme-transition');
+        }, 100);
+      })();
+    </script>
   </head>
-  <body>
+  <body class="m-0 p-0 font-sans antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

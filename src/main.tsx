@@ -1,57 +1,93 @@
-import React from 'react';
+import React from 'react'
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
+import { AuthProvider } from './hooks/useAuth';
+import { initCursorErrorHandler, cleanupCursorErrorHandler } from './utils/cursorErrorHandler';
+import { Toaster } from 'react-hot-toast';
 import './index.css';
-import ErrorBoundary from './components/ErrorBoundary';
 
-const queryClient = new QueryClient();
+console.log('🚀 main.tsx: Запускаем приложение...');
 
-// Global handlers — если есть runtime error до React mount, покажем alert + console
-window.addEventListener('error', (ev) => {
-  // покажем поверх страницы (если React не успел примонтироваться)
-  try {
-    console.error('window.error', ev.error || ev.message, ev);
-    // Если document.body пуст — вставляем простой блок с ошибкой
-    if (!document.getElementById('root') || !document.body.innerHTML.trim()) {
-      document.body.innerHTML = `<pre style="white-space:pre-wrap;background:#2b2b2b;color:#fff;padding:20px;">Runtime error: ${String(
-        ev.error?.message ?? ev.message
-      )}\n\nSee console for details.</pre>`;
-    }
-  } catch (e) { console.error('Error handling unhandled rejection:', e); }
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      retryDelay: 2000,
+      staleTime: 1000 * 60 * 5, // 5 минут
+      gcTime: 1000 * 60 * 30, // 30 минут
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    },
+    mutations: {
+      retry: 2,
+      retryDelay: 2000,
+    },
+  },
 });
 
-window.addEventListener('unhandledrejection', (ev) => {
-  console.error('unhandledrejection', ev.reason);
-  try {
-    if (!document.getElementById('root') || !document.body.innerHTML.trim()) {
-      document.body.innerHTML = `<pre style="white-space:pre-wrap;background:#2b2b2b;color:#fff;padding:20px;">Unhandled promise rejection: ${String(
-        ev.reason
-      )}\n\nSee console for details.</pre>`;
-    }
-  } catch (e) { console.error('Error handling window error:', e); }
-});
+console.log('🔧 main.tsx: QueryClient создан');
 
-const rootEl = document.getElementById('root');
-if (!rootEl) {
-  // очень частая причина белого экрана — отсутствует div#root в index.html
-  document.body.innerHTML =
-    '<div style="padding:20px;background:#111;color:#fff;"><h2>Ошибка: элемент с id="root" не найден в index.html</h2><p>Проверьте index.html — должен быть <div id="root"></div>.</p></div>';
-} else {
-  const root = createRoot(rootEl);
-  root.render(
-    <React.StrictMode>
-      <ErrorBoundary>
-        <HelmetProvider>
-          <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
-          </QueryClientProvider>
-        </HelmetProvider>
-      </ErrorBoundary>
-    </React.StrictMode>
-  );
+// Инициализация обработчика ошибок для курсора
+console.log('🖱️ main.tsx: Инициализируем обработчик ошибок курсора...');
+initCursorErrorHandler();
+console.log('✅ main.tsx: Обработчик ошибок курсора инициализирован');
+
+// Обработка очистки при размонтировании
+const handleBeforeUnload = () => {
+  console.log('🧹 main.tsx: Очищаем обработчик ошибок курсора...');
+  cleanupCursorErrorHandler();
+};
+
+// Добавляем обработчики для очистки
+window.addEventListener('beforeunload', handleBeforeUnload);
+window.addEventListener('pagehide', handleBeforeUnload);
+
+createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+                borderRadius: '8px',
+              },
+              success: {
+                style: {
+                  background: '#10b981',
+                },
+              },
+              error: {
+                style: {
+                  background: '#ef4444',
+                },
+              },
+            }}
+          />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </React.StrictMode>
+);
+
+console.log('✅ main.tsx: Приложение отрендерено');
+
+// Очистка при завершении работы
+const handleAppUnmount = () => {
+  console.log('🧹 main.tsx: Приложение размонтируется, очищаем обработчики...');
+  cleanupCursorErrorHandler();
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+  window.removeEventListener('pagehide', handleBeforeUnload);
+};
+
+// Добавляем обработчик для очистки при размонтировании приложения
+if (typeof window !== 'undefined') {
+  window.addEventListener('unload', handleAppUnmount);
 }

@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
                 <li key={item.path}>
                   <Link
                     to={item.path}
-                     className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-all duration-300 ease-in-out"
+                     className="text-gray-500 dark:text-gray-400 hover:text-blue-400 dark:hover:text-blue-400 transition-all duration-300 ease-in-out"
                   >
                     {item.label}
                   </Link>
@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                 <li key={social.name}>
                   <a
                     href={social.url}
-                     className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-all duration-300 ease-in-out"
+                     className="text-gray-500 dark:text-gray-400 hover:text-blue-400 dark:hover:text-blue-400 transition-all duration-300 ease-in-out"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

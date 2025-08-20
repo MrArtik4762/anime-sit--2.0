@@ -3,20 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDebounce } from '../hooks/useDebounce';
 import { useSearch } from '../services/titles';
 import AnimeCard from '../components/AnimeCard';
-import { SearchIcon } from '@heroicons/react/24/outline';
-
-interface SearchSuggestion {
-  id: number;
-  title: string;
-  year?: number;
-  genres?: string[];
-  poster?: {
-    medium: { url: string };
-  };
-}
+import { StarIcon } from '@heroicons/react/24/outline';
 
 const SearchPage: React.FC = () => {
-  const [q, setQ] = React.useState('');
+  const [q, setQ] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -169,7 +159,7 @@ const SearchPage: React.FC = () => {
 
       <div ref={searchRef} className="relative">
         <div className="relative">
-          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <StarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             ref={(el) => {
               if (el) el.focus();
@@ -260,7 +250,7 @@ const SearchPage: React.FC = () => {
           formatSearchResults()
         ) : (
           <div className="text-center py-12">
-            <SearchIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <StarIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
               Начните поиск
             </h3>

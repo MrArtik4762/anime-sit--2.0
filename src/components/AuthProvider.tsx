@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { AuthContext, AuthContextType } from '../hooks/useAuth';
 
 interface AuthProviderWrapperProps {

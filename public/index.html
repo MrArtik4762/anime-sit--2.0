@@ -7,10 +7,48 @@
     <meta name="theme-color" content="#121212" />
     <meta name="description" content="Современный аниме стриминговый клиент на базе Anilibria API" />
     <title>AniStream — современный клиент Anilibria</title>
-    <!-- Скрипт для удаления no-js класса при загрузке JavaScript -->
+    
+    <!-- Скрипт для предотвращения вспышек неправильной темы -->
     <script>
-      document.documentElement.classList.remove('no-js');
-      document.documentElement.classList.add('js');
+      // Предотвращение FOUC (Flash of Unstyled Content)
+      (function() {
+        // Определение предпочтений темы пользователя
+        const getInitialTheme = () => {
+          // Проверяем сохраненную тему в localStorage
+          const savedTheme = localStorage.getItem('app-theme');
+          if (savedTheme === 'light' || savedTheme === 'dark') {
+            return savedTheme;
+          }
+          
+          // Проверяем системные предпочтения
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+          }
+          
+          // По умолчанию светлая тема
+          return 'light';
+        };
+        
+        // Применяем тему до загрузки стилей
+        const theme = getInitialTheme();
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+        
+        // Устанавливаем тему без анимаций при начальной загрузке
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        
+        // Добавляем класс для предотвращения анимаций при начальной загрузке
+        document.documentElement.classList.add('no-theme-transition');
+        
+        // Убираем класс предотвращения анимаций после небольшой задержки
+        setTimeout(() => {
+          document.documentElement.classList.remove('no-theme-transition');
+        }, 100);
+      })();
     </script>
   </head>
   <body class="m-0 p-0 font-sans antialiased">

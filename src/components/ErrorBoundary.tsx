@@ -71,8 +71,8 @@ class ErrorBoundary extends Component<Props, State> {
                 onClick={this.handleGoHome}
                 className={`error-button ${this.prefersReducedMotion ? '' : 'transition-all duration-300 hover:scale-105'}`}
                 style={{
-                  background: 'var(--bg-tertiary)',
-                  color: 'var(--text-primary)'
+                  background: '#1f2937',
+                  color: '#f9fafb'
                 }}
               >
                 На главную

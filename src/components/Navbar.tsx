@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePrefersReducedMotion } from '../utils/motion';
 import { useLocation } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import ThemeToggle from './ThemeToggle';
 import NotificationBell from './NotificationBell';
 

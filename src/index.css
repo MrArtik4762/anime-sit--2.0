@@ -5,39 +5,82 @@
 
 /* reset */
 * { box-sizing: border-box; }
-html,body,#root { height:100%; margin:0; padding:0; }
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 /* Theme variables */
 :root {
-  --bg: #f7f8fb;
-  --bg-2: #ffffff;
-  --text: #0b1220;
-  --muted: #6b7280;
-  --card-bg: rgba(255,255,255,0.9);
-  --accent: #8B5CF6;
-  --accent-2: #7C3AED;
-  --glass-border: rgba(0,0,0,0.06);
-  --transition-fast: 240ms cubic-bezier(.2,.9,.2,1);
+  /* Основные цвета с высоким контрастом */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
+  
+  /* Дополнительные переменные для плавных переходов */
+  --bg: hsl(var(--background));
+  --bg-2: hsl(var(--secondary));
+  --text: hsl(var(--foreground));
+  --muted: hsl(var(--muted));
+  --border: hsl(var(--border));
+  --primary: hsl(var(--primary));
+  --primary-hover: hsl(221.2 83.2% 48.3%);
+  --secondary-hover: hsl(210 40% 91%);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-html.dark {
-  --bg: #071028;
-  --bg-2: #0f1724;
-  --text: #e6eef8;
-  --muted: #93a6bf;
-  --card-bg: rgba(255,255,255,0.03);
-  --glass-border: rgba(255,255,255,0.06);
-}
-
-html.light {
-  --bg: #f7f8fb;
-  --bg-2: #ffffff;
-  --text: #0b1220;
-  --muted: #6b7280;
-  --card-bg: rgba(255,255,255,0.95);
-  --glass-border: rgba(0,0,0,0.06);
-  --text-hover: #2563eb;  /* Цвет текста при наведении в светлой теме */
-  --hover-bg: #f3f4f6;    /* Фон при наведении в светлой теме */
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
+  
+  /* Дополнительные переменные для темной темы */
+  --bg: hsl(var(--background));
+  --bg-2: hsl(var(--muted));
+  --text: hsl(var(--foreground));
+  --muted: hsl(var(--muted-foreground));
+  --border: hsl(var(--border));
+  --primary: hsl(var(--primary));
+  --primary-hover: hsl(217.2 91.2% 54.8%);
+  --secondary-hover: hsl(217.2 32.6% 20.5%);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 /* page base */
@@ -46,8 +89,84 @@ body {
   background: linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
-  transition: background 360ms ease, color 360ms ease;
+  transition: background var(--transition-base), color var(--transition-base);
   min-height: 100vh;
+  /* Предотвращение вспышек при смене темы */
+  background-attachment: fixed;
+}
+
+/* Улучшенные плавные переходы для всех элементов */
+* {
+  transition-property: background-color, color, border-color, box-shadow, opacity, fill, stroke, text-shadow, transform;
+  transition-duration: var(--transition-base);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-behavior: normal;
+}
+
+/* Оптимизация для GPU ускорения */
+* {
+  will-change: background-color, color, border-color, box-shadow, opacity, transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Улучшенные анимации для темы */
+@keyframes themeTransition {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.theme-transitioning {
+  animation: themeTransition var(--transition-base) ease-out;
+}
+
+/* Оптимизация для конкретных элементов */
+body,
+html,
+#root {
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.card,
+.glass,
+.anime-card,
+.navbar,
+.header {
+  transition: background-color var(--transition-base), border-color var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+}
+
+button,
+input,
+textarea,
+select {
+  transition: background-color var(--transition-base), border-color var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+}
+
+svg {
+  transition: fill var(--transition-base), stroke var(--transition-base);
+}
+
+img {
+  transition: filter var(--transition-base), opacity var(--transition-base);
+}
+
+/* Поддержка prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    will-change: auto !important;
+    transform: none !important;
+    backface-visibility: visible !important;
+    perspective: none !important;
+  }
 }
 
 /* Enhanced gradient backgrounds for containers */
@@ -159,108 +278,6 @@ body {
   filter: blur(0);
 }
 
-/* Глобальные правила для плавной смены темы */
-.theme-transition * {
-  transition-property: background-color, color, border-color, box-shadow, opacity, fill, stroke;
-  transition-duration: 360ms;
-  transition-timing-function: ease;
-  transition-behavior: normal;
-}
-
-/* Оптимизация производительности - GPU ускорение */
-.theme-transition * {
-  will-change: background-color, color, border-color, box-shadow, opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
-
-/* Поддержка prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .theme-transition * {
-    transition: none !important;
-    will-change: auto !important;
-    transform: none !important;
-    backface-visibility: visible !important;
-    perspective: none !important;
-  }
-}
-
-/* Оптимизация для body */
-.theme-transition body {
-  transition: background 360ms ease, color 360ms ease;
-}
-
-/* Оптимизация для навигации */
-.theme-transition .navbar,
-.theme-transition .header {
-  transition: background-color 360ms ease, border-color 360ms ease, box-shadow 360ms ease;
-}
-
-/* Оптимизация для карточек */
-.theme-transition .anime-card,
-.theme-transition .card,
-.theme-transition .glass {
-  transition: background-color 360ms ease, border-color 360ms ease, color 360ms ease, box-shadow 360ms ease;
-}
-
-/* Оптимизация для переключателя темы */
-.theme-transition .theme-toggle {
-  transition: transform 200ms ease, background-color 360ms ease, box-shadow 360ms ease;
-}
-
-.theme-transition .theme-toggle:hover {
-  transform: scale(1.05);
-}
-
-.theme-transition .theme-toggle:active {
-  transform: scale(0.98);
-}
-
-/* Оптимизация для текстовых элементов */
-.theme-transition h1,
-.theme-transition h2,
-.theme-transition h3,
-.theme-transition h4,
-.theme-transition h5,
-.theme-transition h6,
-.theme-transition p,
-.theme-transition span,
-.theme-transition a,
-.theme-transition label {
-  transition: color 360ms ease;
-}
-
-/* Оптимизация для форм элементов */
-.theme-transition input,
-.theme-transition textarea,
-.theme-transition select,
-.theme-transition button {
-  transition: background-color 360ms ease, border-color 360ms ease, color 360ms ease, box-shadow 360ms ease;
-}
-
-/* Оптимизация для иконок */
-.theme-transition svg {
-  transition: fill 360ms ease, stroke 360ms ease;
-}
-
-/* Оптимизация для изображений */
-.theme-transition img {
-  transition: filter 360ms ease, opacity 360ms ease;
-}
-
-/* Оптимизация для модальных окон и всплывающих элементов */
-.theme-transition .modal,
-.theme-transition .popup,
-.theme-transition .dropdown {
-  transition: background-color 360ms ease, border-color 360ms ease, box-shadow 360ms ease;
-}
-
-/* Оптимизация для разделителей */
-.theme-transition hr,
-.theme-transition .divider {
-  transition: background-color 360ms ease, border-color 360ms ease;
-}
 
 /* Page Transitions CSS Fallback - работает когда JavaScript отключен или framer-motion недоступен */
 .no-js .page-transition-fallback,
@@ -505,5 +522,43 @@ body {
   
   .animate-spin {
     animation: none;
+  }
+}
+
+/* Классы для высокого контраста (≥ 4.5) */
+.text-high-contrast {
+  color: hsl(var(--text-high-contrast));
+}
+
+.text-high-contrast-light {
+  color: hsl(var(--text-high-contrast) / 1);
+}
+
+.text-high-contrast-dark {
+  color: hsl(var(--text-high-contrast) / 1);
+}
+
+/* Улучшенная доступность */
+.focus-visible:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Предотвращение FOUC (Flash of Unstyled Content) */
+@media (prefers-reduced-motion: no-preference) {
+  .no-theme-transition * {
+    transition: none !important;
+  }
+}
+
+/* Оптимизация для печати */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
   }
 }

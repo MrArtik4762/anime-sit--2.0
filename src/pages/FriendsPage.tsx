@@ -24,7 +24,11 @@ interface FriendRequest {
   createdAt: string;
 }
 
-const FriendsPage: React.FC = () => {
+interface FriendsPageProps {
+  compact?: boolean;
+}
+
+const FriendsPage: React.FC<FriendsPageProps> = ({ compact = false }) => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'suggestions'>('friends');
 
@@ -104,6 +108,57 @@ const FriendsPage: React.FC = () => {
     return `${Math.floor(diffInMinutes / 1440)} дн назад`;
   };
 
+  if (compact) {
+    // Компактный вид для профиля
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Друзья
+          </h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {friends.map((friend: Friend) => (
+            <motion.div
+              key={friend._id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+            >
+              <div className="flex items-center space-x-3">
+                <img
+                  src={friend.avatar || '/placeholder.jpg'}
+                  alt={friend.username}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <h3 className="font-medium text-gray-900 dark:text-white">
+                    {friend.username}
+                  </h3>
+                  {friend.level && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Уровень {friend.level}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <FriendButton targetUserId={friend._id} size="sm" />
+            </motion.div>
+          ))}
+        </div>
+        
+        {friends.length === 0 && (
+          <div className="text-center py-8 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
+            <p className="text-gray-500 dark:text-gray-400">У вас пока нет друзей</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Полный вид для отдельной страницы
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="mb-8">

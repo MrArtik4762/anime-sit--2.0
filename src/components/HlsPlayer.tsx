@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Hls from 'hls.js';
 
 const HlsPlayer: React.FC<{ sources: { url: string }[] }> = ({ sources }) => {
-  const ref = React.useRef<HTMLVideoElement | null>(null);
+  const ref = useRef<HTMLVideoElement | null>(null);
   const url = sources?.[0]?.url ?? null;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!url || !ref.current) return;
     const video = ref.current;
     if (Hls.isSupported()) {

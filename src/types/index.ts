@@ -11,7 +11,7 @@ export interface Poster {
 }
 
 export interface Title {
-  id: number;
+  id: string;
   names: TitleNames;
   posters: {
     medium: Poster;
