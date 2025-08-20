@@ -1,20 +1,21 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const multer = require('multer');
-const http = require('http');
-const socketIo = require('socket.io');
+import express from "express";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import multer from "multer";
+import http from "http";
+import { Server } from "socket.io";
+import animeRoutes from "./routes/anime.js";
 
 // Загрузка переменных окружения
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
+const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true
@@ -29,14 +30,12 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static("public"));
 
 // Подключение к MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/anime-site', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect(process.env.MONGO_URI, { dbName: "animeDB" })
+  .then(() => console.log("✅ Подключено к MongoDB Atlas"))
+  .catch((e) => console.error("❌ Ошибка MongoDB:", e.message));
 
 // Модели данных
 const UserSchema = new mongoose.Schema({
@@ -935,7 +934,10 @@ app.post('/api/profile/comments', authenticateToken, async (req, res) => {
   }
 });
 
+// Роуты аниме
+app.use("/api/anime", animeRoutes);
+
 // Запуск сервера
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Backend на порту ${PORT}`);
 });
