@@ -18,10 +18,15 @@ export const handleCursorError = (event: MouseEvent | TouchEvent): { offsetX: nu
 
     // Для MouseEvent используем offsetX и offsetY
     if ('offsetX' in event && 'offsetY' in event) {
-      return {
-        offsetX: (event as MouseEvent).offsetX || 0,
-        offsetY: (event as MouseEvent).offsetY || 0
-      };
+      const mouseEvent = event as MouseEvent;
+      // Проверяем, что offsetX и offsetY являются числами
+      if (typeof mouseEvent.offsetX === 'number' && typeof mouseEvent.offsetY === 'number' &&
+          !isNaN(mouseEvent.offsetX) && !isNaN(mouseEvent.offsetY)) {
+        return {
+          offsetX: mouseEvent.offsetX,
+          offsetY: mouseEvent.offsetY
+        };
+      }
     }
 
     // Для TouchEvent или других событий вычисляем координаты относительно элемента
@@ -54,11 +59,6 @@ export const handleCursorError = (event: MouseEvent | TouchEvent): { offsetX: nu
  */
 export const getSafeCursorPosition = (event: MouseEvent | TouchEvent): { x: number; y: number } => {
   try {
-    console.log('🔍 getSafeCursorPosition called with:', {
-      event: !!event,
-      type: event?.type,
-      target: event?.target
-    });
 
     // Проверяем, что событие существует
     if (!event) {
@@ -73,21 +73,22 @@ export const getSafeCursorPosition = (event: MouseEvent | TouchEvent): { x: numb
     if ('touches' in event && event.touches && event.touches.length > 0) {
       clientX = event.touches[0].clientX;
       clientY = event.touches[0].clientY;
-      console.log('📱 TouchEvent coordinates:', { clientX, clientY });
     }
     // Обработка MouseEvent
     else if ('clientX' in event && 'clientY' in event) {
-      clientX = (event as MouseEvent).clientX;
-      clientY = (event as MouseEvent).clientY;
-      console.log('🖱️ MouseEvent coordinates:', { clientX, clientY });
+      const mouseEvent = event as MouseEvent;
+      // Проверяем, что clientX и clientY являются числами
+      if (typeof mouseEvent.clientX === 'number' && typeof mouseEvent.clientY === 'number' &&
+          !isNaN(mouseEvent.clientX) && !isNaN(mouseEvent.clientY)) {
+        clientX = mouseEvent.clientX;
+        clientY = mouseEvent.clientY;
+      }
     }
 
     // Проверка существования координат
     if (clientX !== undefined && clientY !== undefined) {
-      console.log('✅ Safe coordinates returned:', { x: clientX, y: clientY });
       return { x: clientX, y: clientY };
     } else {
-      console.warn('❌ Unable to get coordinates from event');
       return { x: 0, y: 0 };
     }
   } catch (error) {
@@ -105,8 +106,9 @@ let isCursorHandlerInitialized = false;
 const createSafeMouseEvent = (event: MouseEvent): MouseEvent => {
   try {
     // Если у события уже есть корректные offsetX/offsetY, используем их
-    if (event.offsetX !== undefined && event.offsetY !== undefined &&
-        event.offsetX !== null && event.offsetY !== null) {
+    // Проверяем, что значения существуют и являются числами
+    if (typeof event.offsetX === 'number' && typeof event.offsetY === 'number' &&
+        !isNaN(event.offsetX) && !isNaN(event.offsetY)) {
       return event;
     }
 
@@ -114,39 +116,43 @@ const createSafeMouseEvent = (event: MouseEvent): MouseEvent => {
     const target = event.target instanceof HTMLElement ? event.target : null;
     
     if (target) {
-      const rect = target.getBoundingClientRect();
-      const offsetX = event.clientX - rect.left;
-      const offsetY = event.clientY - rect.top;
-      
-      // Создаем кастомное событие с безопасными координатами
-      const customEvent = new MouseEvent(event.type, {
-        clientX: event.clientX,
-        clientY: event.clientY,
-        screenX: event.screenX,
-        screenY: event.screenY,
-        button: event.button,
-        buttons: event.buttons,
-        ctrlKey: event.ctrlKey,
-        shiftKey: event.shiftKey,
-        altKey: event.altKey,
-        metaKey: event.metaKey,
-        bubbles: event.bubbles,
-        cancelable: event.cancelable,
-        composed: event.composed,
-        view: event.view,
-        detail: event.detail,
-        movementX: event.movementX,
-        movementY: event.movementY,
-        offsetX: offsetX,
-        offsetY: offsetY,
-        pageX: event.pageX,
-        pageY: event.pageY,
-        relatedTarget: event.relatedTarget,
-        region: event.region,
-        which: event.which,
-      });
-      
-      return customEvent;
+      try {
+        const rect = target.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        
+        // Создаем кастомное событие с безопасными координатами
+        const customEvent = new MouseEvent(event.type, {
+          clientX: event.clientX,
+          clientY: event.clientY,
+          screenX: event.screenX,
+          screenY: event.screenY,
+          button: event.button,
+          buttons: event.buttons,
+          ctrlKey: event.ctrlKey,
+          shiftKey: event.shiftKey,
+          altKey: event.altKey,
+          metaKey: event.metaKey,
+          bubbles: event.bubbles,
+          cancelable: event.cancelable,
+          composed: event.composed,
+          view: event.view,
+          detail: event.detail,
+          movementX: event.movementX,
+          movementY: event.movementY,
+          offsetX: offsetX,
+          offsetY: offsetY,
+          pageX: event.pageX,
+          pageY: event.pageY,
+          relatedTarget: event.relatedTarget,
+          region: event.region,
+          which: event.which,
+        });
+        
+        return customEvent;
+      } catch (error) {
+        console.warn('Failed to create custom event:', error);
+      }
     }
     
     return event;

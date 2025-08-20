@@ -10,6 +10,7 @@ import { useSafeMutation, useSafeQuery, ErrorDisplay } from '../services/errorHa
 import Favorites from './Favorites';
 import FriendsPage from './FriendsPage';
 import ActivityPage from './ActivityPage';
+import CardSkeleton from '../components/CardSkeleton';
 
 interface AuthContextType {
   user: any;
@@ -253,8 +254,12 @@ const ProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <CardSkeleton key={index} />
+          ))}
+        </div>
       </div>
     );
   }

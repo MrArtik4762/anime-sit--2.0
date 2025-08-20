@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Theme Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid hsl(var(--border));
+            border-radius: 8px;
+            background: hsl(var(--surface));
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid hsl(var(--border));
+            border-radius: 6px;
+            background: hsl(var(--surface));
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: hsl(var(--text));
+        }
+        
+        .test-description {
+            margin-bottom: 15px;
+            color: hsl(var(--text-muted));
+        }
+        
+        .theme-toggle-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .current-theme {
+            padding: 8px 12px;
+            background: hsl(var(--muted));
+            border-radius: 4px;
+            font-family: monospace;
+            color: hsl(var(--text));
+        }
+        
+        .console-output {
+            background: hsl(var(--surface));
+            color: hsl(var(--text));
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid hsl(var(--border));
+        }
+        
+        .test-button {
+            padding: 8px 16px;
+            background: hsl(var(--primary));
+            color: hsl(var(--text-foreground));
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: hsl(var(--primary-hover));
+        }
+        
+        .success {
+            color: hsl(var(--green-500));
+        }
+        
+        .error {
+            color: hsl(var(--red-500));
+        }
+        
+        .warning {
+            color: hsl(var(--yellow-500));
+        }
+        
+        .sample-text {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: hsl(var(--muted));
+            color: hsl(var(--text));
+        }
+        
+        .sample-border {
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid hsl(var(--border));
+            border-radius: 4px;
+            background: hsl(var(--surface));
+            color: hsl(var(--text));
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">System Theme Test</h1>
+        
+        <div class="test-section">
+            <div class="test-title">1. Current System Theme Detection</div>
+            <div class="test-description">
+                Проверка текущей темы системы и соответствие интерфейса
+            </div>
+            <div class="theme-toggle-container">
+                <button id="themeToggle" aria-label="Toggle theme" title="Переключить тему">
+                    <!-- ThemeToggle будет вставлен сюда -->
+                </button>
+                <div class="current-theme">Current: <span id="currentTheme">system</span></div>
+                <div class="current-theme">System: <span id="systemTheme">detecting...</span></div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">2. Theme Appearance Test</div>
+            <div class="test-description">
+                Проверка внешнего вида в текущей теме
+            </div>
+            <div class="sample-text">
+                Пример текста в текущей теме
+            </div>
+            <div class="sample-border">
+                Пример элемента с границей в текущей теме
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">3. System Theme Change Test</div>
+            <div class="test-description">
+                Тест автоматического переключения при изменении системной темы
+            </div>
+            <button class="test-button" onclick="toggleSystemTheme()">Simulate System Theme Change</button>
+            <div class="console-output" id="systemChangeOutput"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">4. localStorage Test</div>
+            <div class="test-description">
+                Проверка сохранения и восстановления темы из localStorage
+            </div>
+            <button class="test-button" onclick="testLocalStorage()">Test localStorage</button>
+            <div class="console-output" id="localStorageOutput"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">5. Manual Theme Switch Test</div>
+            <div class="test-description">
+                Проверка ручного переключения между темами
+            </div>
+            <div class="theme-toggle-container">
+                <button class="test-button" onclick="setTheme('system')">System</button>
+                <button class="test-button" onclick="setTheme('light')">Light</button>
+                <button class="test-button" onclick="setTheme('dark')">Dark</button>
+            </div>
+            <div class="console-output" id="manualSwitchOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let currentTheme = 'system';
+        let systemThemePrefersDark = false;
+        let isSystemTheme = true;
+        
+        // Симуляция ThemeToggle компонента
+        class MockThemeToggle {
+            constructor(containerId) {
+                this.container = document.getElementById(containerId);
+                this.themes = ['system', 'light', 'dark'];
+                this.currentThemeIndex = 0;
+                this.isClicking = false;
+                this.icons = {
+                    system: '💻',
+                    light: '☀️',
+                    dark: '🌙'
+                };
+                this.render();
+            }
+            
+            cycleTheme() {
+                if (this.isClicking) return;
+                
+                this.isClicking = true;
+                
+                try {
+                    this.currentThemeIndex = (this.currentThemeIndex + 1) % this.themes.length;
+                    const newTheme = this.themes[this.currentThemeIndex];
+                    
+                    console.log('ThemeToggle clicked - new theme:', newTheme);
+                    this.render();
+                    
+                    // Обновляем глобальное состояние
+                    currentTheme = newTheme;
+                    isSystemTheme = newTheme === 'system';
+                    updateThemeDisplay();
+                    applyTheme(newTheme);
+                    
+                    return newTheme;
+                } catch (error) {
+                    console.error('Error in ThemeToggle:', error);
+                } finally {
+                    setTimeout(() => {
+                        this.isClicking = false;
+                    }, 300);
+                }
+            }
+            
+            render() {
+                const currentTheme = this.themes[this.currentThemeIndex];
+                const icon = this.icons[currentTheme];
+                const color = this.getThemeColor(currentTheme);
+                
+                this.container.innerHTML = `
+                    <button 
+                        onclick="themeToggle.cycleTheme()" 
+                        aria-label="Toggle theme" 
+                        title="Тема: ${currentTheme}"
+                        style="
+                            padding: 8px;
+                            border-radius: 6px;
+                            border: 1px solid hsl(var(--border));
+                            background: hsl(var(--surface));
+                            cursor: ${this.isClicking ? 'not-allowed' : 'pointer'};
+                            opacity: ${this.isClicking ? '0.75' : '1'};
+                            transition: all 0.2s;
+                        "
+                    >
+                        <span style="font-size: 20px; color: ${color};">${icon}</span>
+                    </button>
+                `;
+            }
+            
+            getThemeColor(theme) {
+                switch (theme) {
+                    case 'system': return '#3b82f6';
+                    case 'light': return '#eab308';
+                    case 'dark': return '#d1d5db';
+                    default: return '#000000';
+                }
+            }
+        }
+        
+        // Функции для работы с темой
+        function detectSystemTheme() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            systemThemePrefersDark = prefersDark;
+            document.getElementById('systemTheme').textContent = prefersDark ? 'dark' : 'light';
+            return prefersDark ? 'dark' : 'light';
+        }
+        
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            const systemTheme = detectSystemTheme();
+            const resolvedTheme = theme === 'system' ? systemTheme : theme;
+            
+            // Применяем тему
+            root.setAttribute('data-theme', resolvedTheme);
+            (root).style.colorScheme = resolvedTheme;
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('theme', theme);
+            
+            // Обновляем отображение
+            updateThemeDisplay();
+            
+            // Логируем изменение
+            logOutput('systemChangeOutput', `Theme changed to: ${theme} (resolved: ${resolvedTheme})`, '');
+        }
+        
+        function updateThemeDisplay() {
+            document.getElementById('currentTheme').textContent = currentTheme;
+        }
+        
+        function setTheme(theme) {
+            currentTheme = theme;
+            isSystemTheme = theme === 'system';
+            themeToggle.currentThemeIndex = theme === 'system' ? 0 : theme === 'light' ? 1 : 2;
+            themeToggle.render();
+            applyTheme(theme);
+            logOutput('manualSwitchOutput', `Manually set theme to: ${theme}`, '');
+        }
+        
+        function toggleSystemTheme() {
+            // Инвертируем системную тему для теста
+            systemThemePrefersDark = !systemThemePrefersDark;
+            
+            // Если текущая тема - system, обновляем интерфейс
+            if (currentTheme === 'system') {
+                applyTheme('system');
+            }
+            
+            logOutput('systemChangeOutput', `System theme toggled to: ${systemThemePrefersDark ? 'dark' : 'light'}`, 'warning');
+        }
+        
+        function testLocalStorage() {
+            try {
+                // Сохранение темы
+                const testTheme = 'dark';
+                localStorage.setItem('theme', testTheme);
+                
+                // Проверка сохранения
+                const savedTheme = localStorage.getItem('theme');
+                
+                if (savedTheme === testTheme) {
+                    logOutput('localStorageOutput', '✓ localStorage test PASSED', 'success');
+                } else {
+                    logOutput('localStorageOutput', '✗ localStorage test FAILED', 'error');
+                }
+                
+                // Очистка
+                localStorage.removeItem('theme');
+                
+            } catch (error) {
+                logOutput('localStorageOutput', `✗ localStorage test ERROR: ${error.message}`, 'error');
+            }
+        }
+        
+        function logOutput(elementId, message, type = '') {
+            const output = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type ? `class="${type}"` : '';
+            
+            output.innerHTML += `<div ${className}>[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // Инициализация
+        let themeToggle;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация ThemeToggle
+            themeToggle = new MockThemeToggle('themeToggle');
+            
+            // Восстановление темы из localStorage
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            currentTheme = savedTheme;
+            themeToggle.currentThemeIndex = savedTheme === 'system' ? 0 : savedTheme === 'light' ? 1 : 2;
+            themeToggle.render();
+            
+            // Применение темы
+            applyTheme(savedTheme);
+            
+            // Настройка слушателя изменений системной темы
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                console.log('System theme changed:', e.matches ? 'dark' : 'light');
+                if (currentTheme === 'system') {
+                    applyTheme('system');
+                }
+                logOutput('systemChangeOutput', `System preference changed to: ${e.matches ? 'dark' : 'light'}`, 'warning');
+            });
+            
+            console.log('System Theme Test initialized');
+        });
+    </script>
+</body>
+</html>

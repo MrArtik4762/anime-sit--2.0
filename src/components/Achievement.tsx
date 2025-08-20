@@ -38,7 +38,7 @@ const Achievement: React.FC<AchievementProps> = ({
   const rarityColors = {
     common: 'from-gray-400 to-gray-600',
     rare: 'from-blue-400 to-blue-600',
-    epic: 'from-purple-400 to-purple-600',
+    epic: 'from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80',
     legendary: 'from-yellow-400 to-orange-500'
   };
 

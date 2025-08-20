@@ -1,0 +1,54 @@
+:root {
+  /* Тёмная тема (как baseline) */
+  color-scheme: dark;
+  --bg: 240 10% 6%;
+  --surface: 240 12% 12%;
+  --muted: 240 8% 18%;
+  --text: 0 0% 98%;
+  --text-muted: 240 5% 70%;
+  --primary: 262 83% 58%;         /* #7C3AED */
+  --primary-contrast: 0 0% 100%;
+  --ring: 221 83% 53%;            /* #2563EB */
+  --border: 240 10% 22%;
+}
+[data-theme="light"] {
+  /* Новая светлая тема (контрастная, WCAG AA) */
+  color-scheme: light;
+  --bg: 240 20% 99%;              /* #F7F7FB */
+  --surface: 0 0% 100%;           /* #FFFFFF */
+  --muted: 240 33% 97%;           /* лёгкая заливка */
+  --text: 222 47% 11%;            /* #111827 */
+  --text-muted: 215 16% 47%;      /* #6B7280 */
+  --primary: 262 83% 58%;         /* #7C3AED */
+  --primary-contrast: 0 0% 100%;
+  --ring: 221 83% 53%;            /* #2563EB */
+  --border: 220 13% 91%;          /* #E5E7EB */
+}
+
+/* Утилиты */
+html, body, #root { height: 100%; }
+body {
+  background-color: hsl(var(--bg));
+  color: hsl(var(--text));
+}
+/* простые классы, которые мы будем юзать в Tailwind через arbitrary values */
+.surface { background-color: hsl(var(--surface)); }
+.muted   { background-color: hsl(var(--muted)); }
+.bordered{ border: 1px solid hsl(var(--border)); }
+.ring-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px hsl(var(--ring) / .5);
+}
+.elev-1 { box-shadow: 0 4px 20px rgba(0,0,0,.08) }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem .75rem; border-radius: .75rem;
+}
+.btn-ghost { background: transparent; }
+.btn-ghost:hover { background: hsl(var(--muted)); }
+.btn-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-contrast));
+}
+.btn-primary:hover { filter: brightness(.95); }

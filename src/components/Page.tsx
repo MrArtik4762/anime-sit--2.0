@@ -65,10 +65,10 @@ const Page: React.FC<PageProps> = ({ children }) => {
         {children}
         {/* Индикатор загрузки */}
         {reduceMotion ? (
-          <div className="loader-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500"></div>
+          <div className="loader-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--primary))]/80 to-[hsl(var(--ring))]"></div>
         ) : (
           <motion.div
-            className="loader-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 shadow-lg z-50"
+            className="loader-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--primary))]/80 to-[hsl(var(--ring))] shadow-lg z-50"
             variants={loaderVariants}
             initial="initial"
             animate="animate"

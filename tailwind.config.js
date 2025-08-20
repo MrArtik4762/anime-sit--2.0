@@ -5,47 +5,35 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Основные цвета для bg-background и text-foreground
-        background: {
-          DEFAULT: 'var(--background)',
-          light: 'var(--bg-2)',
-        },
-        foreground: {
-          DEFAULT: 'var(--foreground)',
-          muted: 'var(--muted-foreground)',
-        },
+        // Используем CSS переменные из темы
+        'surface': 'hsl(var(--surface))',
+        'muted': 'hsl(var(--muted))',
+        'text': 'hsl(var(--text))',
+        'text-muted': 'hsl(var(--text-muted))',
+        'text-foreground': 'hsl(var(--text-foreground))',
+        'border': 'hsl(var(--border))',
+        'primary': 'hsl(var(--primary))',
+        'primary-hover': 'hsl(var(--primary-hover))',
+        'ring': 'hsl(var(--ring))',
+        'ring-hover': 'hsl(var(--ring-hover))',
         
         // Семантические токены для контраста ≥ 4.5
-        'bg-primary': 'var(--background)',
-        'bg-secondary': 'var(--secondary)',
-        'bg-card': 'var(--card)',
-        'bg-popover': 'var(--popover)',
+        'bg-primary': 'hsl(var(--surface))',
+        'bg-secondary': 'hsl(var(--muted))',
+        'bg-card': 'hsl(var(--surface))',
+        'bg-popover': 'hsl(var(--surface))',
         
-        'text-primary': 'var(--foreground)',
-        'text-secondary': 'var(--secondary-foreground)',
-        'text-card': 'var(--card-foreground)',
-        'text-popover': 'var(--popover-foreground)',
-        'text-muted': 'var(--muted-foreground)',
+        'text-primary': 'hsl(var(--text))',
+        'text-secondary': 'hsl(var(--text-muted))',
+        'text-card': 'hsl(var(--text))',
+        'text-popover': 'hsl(var(--text))',
         
-        'border-primary': 'var(--border)',
-        'border-input': 'var(--input)',
-        'ring-primary': 'var(--ring)',
+        'border-primary': 'hsl(var(--border))',
+        'border-input': 'hsl(var(--border))',
+        'ring-primary': 'hsl(var(--ring))',
         
-        'accent-primary': 'var(--accent)',
-        'accent-foreground': 'var(--accent-foreground)',
-        
-        // Основные цвета для совместимости
-        'site-bg': 'var(--background)',
-        'card-bg': 'var(--card)',
-        'text-primary': 'var(--foreground)',
-        'text-secondary': 'var(--muted-foreground)',
-        'text-heading': 'var(--foreground)',
-        'border-color': 'var(--border)',
-        'primary': 'var(--primary)',
-        'primary-hover': 'var(--primary-hover)',
-        'secondary': 'var(--secondary)',
-        'secondary-hover': 'var(--secondary-hover)',
-        'accent': 'var(--accent)',
+        'accent-primary': 'hsl(var(--primary))',
+        'accent-foreground': 'hsl(var(--text-foreground))',
         
         // Цвета для контраста ≥ 4.5
         'text-high-contrast': {
@@ -53,11 +41,13 @@ export default {
           dark: '#ffffff',
         },
         
-        // Существующие цвета для обратной совместимости
-        bgLight: '#ffffff',
-        bgDark: '#071029',
-        textLight: '#111111',
-        textDark: '#e6eef8',
+        // Дополнительные цвета для совместимости
+        'site-bg': 'hsl(var(--bg))',
+        'card-bg': 'hsl(var(--surface))',
+        'text-heading': 'hsl(var(--text))',
+        'secondary': 'hsl(var(--muted))',
+        'secondary-hover': 'hsl(var(--muted-hover))',
+        'accent': 'hsl(var(--accent))',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

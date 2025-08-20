@@ -1,102 +1,36 @@
-import { useEffect, useState, useCallback } from 'react';
-
-export type Theme = 'light' | 'dark' | 'system';
-
-const readStoredTheme = (): Theme => {
-  try {
-    const v = localStorage.getItem('app-theme') as Theme | null;
-    return v ?? 'system';
-  } catch { return 'system'; }
-};
+import { useEffect, useState, useCallback } from "react";
+type Theme = "light" | "dark" | "system";
+const STORAGE_KEY = "theme";
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(readStoredTheme);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(STORAGE_KEY) as Theme) || "system");
 
-  const applyTheme = useCallback((t: Theme, root: HTMLElement) => {
-    // Удаляем классы темы
-    root.classList.remove('light', 'dark', 'theme-transitioning');
-    
-    // Добавляем класс для предотвращения анимаций при смене темы
-    root.classList.add('no-theme-transition');
-    
-    // Применяем новую тему
-    if (t === 'system') {
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', prefersDark);
-    } else {
-      root.classList.add(t);
-    }
-    
-    // Сохраняем текущую тему в localStorage
-    try {
-      localStorage.setItem('app-theme', t);
-    } catch { /* ignore */ }
-    
-    // Удаляем класс предотвращения анимаций и добавляем плавную анимацию
-    requestAnimationFrame(() => {
-      root.classList.remove('no-theme-transition');
-      requestAnimationFrame(() => {
-        root.classList.add('theme-transitioning');
-      });
-    });
+  const apply = useCallback((t: Theme) => {
+    const root = document.documentElement;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolved: "light" | "dark" = t === "system" ? (prefersDark ? "dark" : "light") : t;
+    root.setAttribute("data-theme", resolved);
+    (root as HTMLElement).style.colorScheme = resolved;
   }, []);
 
   useEffect(() => {
-    const root = document.documentElement;
-    
-    // Инициализация темы без анимаций при первой загрузке
-    if (!isInitialized) {
-      const initialTheme = readStoredTheme();
-      root.classList.remove('light', 'dark');
-      
-      if (initialTheme === 'system') {
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        root.classList.toggle('dark', prefersDark);
-      } else {
-        root.classList.add(initialTheme);
-      }
-      
-      setIsInitialized(true);
-      return;
-    }
-    
-    // Применяем тему с анимациями
-    applyTheme(theme, root);
+    apply(theme);
+    localStorage.setItem(STORAGE_KEY, theme);
+  }, [theme, apply]);
 
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = () => {
-      if (theme === 'system') {
-        applyTheme('system', root);
-      }
-    };
-    
-    // Используем современный API с fallback для старых браузеров
-    if (mq.addEventListener) {
-      mq.addEventListener('change', handler);
-    } else {
-      // Fallback для старых браузеров
-      (mq as any).addListener(handler);
-    }
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => theme === "system" && apply("system");
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [theme, apply]);
 
-    return () => {
-      if (mq.removeEventListener) {
-        mq.removeEventListener('change', handler);
-      } else {
-        // Fallback для старых браузеров
-        (mq as any).removeListener(handler);
-      }
-    };
-  }, [theme, isInitialized, applyTheme]);
+  const cycleTheme = useCallback(() => {
+    const themes: Theme[] = ["dark", "light", "system"];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  }, [theme]);
 
-  // Функция для переключения темы с анимацией
-  const toggleTheme = useCallback(() => {
-    setTheme(prev => {
-      if (prev === 'light') return 'dark';
-      if (prev === 'dark') return 'system';
-      return 'light';
-    });
-  }, []);
-
-  return { theme, setTheme, toggleTheme, isInitialized };
+  return { theme, setTheme, cycleTheme };
 }

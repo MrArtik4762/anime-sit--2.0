@@ -64,7 +64,7 @@ const Favorites: React.FC<FavoritesProps> = ({ compact = false }) => {
       <div className="max-w-7xl mx-auto">
         {/* Заголовок с градиентной заливкой */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-transparent bg-clip-text">
             Избранное
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
@@ -108,13 +108,13 @@ const Favorites: React.FC<FavoritesProps> = ({ compact = false }) => {
                 </svg>
               </div>
             </div>
-            <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+            <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-transparent bg-clip-text">
               Ваша коллекция пуста
             </h3>
             <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
               Начните добавлять аниме в избранное, чтобы создать свою персональную коллекцию
             </p>
-            <button className={`px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 ${prefersReducedMotion ? '' : 'transition-all duration-300 shadow-lg shadow-pink-500/20'}`}>
+            <button className={`px-8 py-3 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 ${prefersReducedMotion ? '' : 'transition-all duration-300 shadow-lg shadow-pink-500/20'}`}>
               Перейти в каталог
             </button>
           </motion.div>
@@ -130,7 +130,7 @@ const Favorites: React.FC<FavoritesProps> = ({ compact = false }) => {
                 className="space-y-6"
               >
                 <div className="flex items-center space-x-4">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-transparent bg-clip-text">
                     {category}
                   </h2>
                   <span className="px-3 py-1 bg-white/10 text-gray-400 rounded-full text-sm border border-white/10">

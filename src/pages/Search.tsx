@@ -123,7 +123,7 @@ const SearchPage: React.FC = () => {
         
         {titleMatches.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">
+            <h3 className="text-sm font-semibold text-[hsl(var(--text-muted))] mb-2">
               По названию "{q}"
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

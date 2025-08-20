@@ -22,7 +22,7 @@ export interface MutationResult<T> extends Omit<UseMutationResult<T, ApiError, a
 }
 
 // Кастомный хук для запросов с обработкой ошибок
-export const useSafeQuery = <T>(
+export const useSafeQuery = <T,>(
   queryKey: any[],
   queryFn: () => Promise<T>,
   options?: {
@@ -54,7 +54,7 @@ export const useSafeQuery = <T>(
 };
 
 // Кастомный хук для бесконечных запросов с обработкой ошибок
-export const useSafeInfiniteQuery = <T>(
+export const useSafeInfiniteQuery = <T,>(
   queryKey: any[],
   queryFn: ({ pageParam }: { pageParam?: number }) => Promise<T>,
   options?: {
@@ -87,7 +87,7 @@ export const useSafeInfiniteQuery = <T>(
 };
 
 // Кастомный хук для мутаций с обработкой ошибок
-export const useSafeMutation = <T, V, N, C>(
+export const useSafeMutation = <T, V, N, C,>(
   mutationFn: (variables: V) => Promise<T>,
   options?: {
     onMutate?: (variables: V) => Promise<N | C> | N | C;

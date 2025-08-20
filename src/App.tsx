@@ -1,13 +1,10 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import Header from "./components/Header";
-import Navbar from "./components/Navbar";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import AppHeader from "./components/layout/AppHeader";
 import Footer from "./components/Footer";
 import ThemeToggle from "./components/ThemeToggle";
-// import NotificationProvider from "./components/NotificationProvider";
-import Preloader from "./components/Preloader";
 import ParticlesBg from "./components/ParticlesBg";
 import Page from "./components/Page";
-import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Страницы
 import Home from "./pages/Home";
@@ -26,7 +23,6 @@ import NotFound from "./pages/NotFound";
 
 // Компоненты
 import Protected from "./components/Protected";
-import CursorTest from "./components/CursorTest";
 
 // Админ страницы
 import AdminDashboard from "./pages/AdminDashboard";
@@ -35,25 +31,21 @@ import AdminCommentsPage from "./pages/AdminCommentsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminStats from "./pages/AdminStats";
 
-function App() {
-  const location = useLocation();
-  
+export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
-      <Header />
-      <Navbar />
+    <>
+      <AppHeader /> {/* теперь шапка одна на всё приложение */}
       <ParticlesBg />
       
       <main className="flex-grow container mx-auto px-4 py-6">
         <Page>
-          <Routes location={location} key={location.pathname}>
+          <Routes>
             {/* Основные страницы */}
             <Route path="/" element={<Home />} />
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/anime/:id" element={<Details />} />
             <Route path="/search" element={<Search />} />
             <Route path="/favorites" element={<Favorites />} />
-            <Route path="/cursor-test" element={<CursorTest />} />
             
             {/* Страницы аутентификации */}
             <Route path="/login" element={<Login />} />
@@ -140,8 +132,6 @@ function App() {
       
       <Footer />
       <ThemeToggle />
-    </div>
+    </>
   );
 }
-
-export default App;

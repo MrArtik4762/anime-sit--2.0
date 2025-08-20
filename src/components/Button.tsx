@@ -45,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({
       {/* Градиентный оверлей для primary кнопок */}
       {variant === 'primary' && gradient && (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0"
+          className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 opacity-0"
           initial={false}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.3 }}

@@ -71,7 +71,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
       <div className="min-h-screen relative">
         {children}
         {/* Swipe bar fallback */}
-        <div className="swipe-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 transform scale-x-0 transition-transform duration-300 ease-out"></div>
+        <div className="swipe-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--primary))]/80 to-[hsl(var(--ring))] transform scale-x-0 transition-transform duration-300 ease-out"></div>
       </div>
     );
   }
@@ -89,7 +89,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
         {children}
         {/* Улучшенная анимация swipe bar */}
         <motion.div
-          className="swipe-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 shadow-lg"
+          className="swipe-bar fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--primary))]/80 to-[hsl(var(--ring))] shadow-lg"
           variants={swipeBarVariants}
           initial="initial"
           animate="animate"

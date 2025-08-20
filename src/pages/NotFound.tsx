@@ -44,7 +44,7 @@ const NotFound: React.FC = () => {
             className="relative"
           >
             <motion.h1 
-              className="text-9xl md:text-[12rem] font-bold bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent"
+              className="text-9xl md:text-[12rem] font-bold bg-gradient-to-br from-[hsl(var(--primary))] via-[hsl(var(--primary))]/80 to-[hsl(var(--ring))] bg-clip-text text-transparent"
               animate={!reduceMotion ? {
                 scale: [1, 1.05, 1],
                 rotate: [0, 2, -2, 0],
@@ -128,7 +128,7 @@ const NotFound: React.FC = () => {
             >
               <Link
                 to="/"
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-purple-500/50"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-purple-500/50"
               >
                 <svg 
                   className="w-5 h-5 mr-2" 

@@ -113,7 +113,7 @@ const FriendsPage: React.FC<FriendsPageProps> = ({ compact = false }) => {
     return (
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-xl font-semibold text-[hsl(var(--text))]">
             Друзья
           </h3>
         </div>

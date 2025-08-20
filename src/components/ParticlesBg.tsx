@@ -101,14 +101,22 @@ const ParticlesBg: React.FC = () => {
 
   // Обработка движения мыши
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    console.log('🖱️ ParticlesBg handleMouseMove called');
-    const { x, y } = getSafeCursorPosition(e);
-    console.log('📍 ParticlesBg mouse position updated:', { x, y });
-    mousePosition.current = {
-      x,
-      y,
-      radius: 150,
-    };
+    try {
+      const { x, y } = getSafeCursorPosition(e);
+      mousePosition.current = {
+        x,
+        y,
+        radius: 150,
+      };
+    } catch (error) {
+      console.warn('Error in handleMouseMove:', error);
+      // Устанавливаем безопасные значения при ошибке
+      mousePosition.current = {
+        x: -100,
+        y: -100,
+        radius: 150,
+      };
+    }
   }, []);
 
   const handleMouseLeave = useCallback(() => {

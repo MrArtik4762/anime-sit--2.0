@@ -7,6 +7,7 @@ import { AuthProvider } from './hooks/useAuth';
 import { initCursorErrorHandler, cleanupCursorErrorHandler } from './utils/cursorErrorHandler';
 import { Toaster } from 'react-hot-toast';
 import './index.css';
+import './styles/theme.css';
 
 console.log('🚀 main.tsx: Запускаем приложение...');
 

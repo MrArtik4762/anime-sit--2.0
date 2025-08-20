@@ -131,7 +131,7 @@ const AchievementsPage: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-white mb-8"
+        className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 rounded-lg p-6 text-white mb-8"
       >
         <div className="flex items-center justify-between mb-4">
           <div>
